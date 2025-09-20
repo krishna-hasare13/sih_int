@@ -24,14 +24,6 @@ def setup_auth_database():
         cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (admin_username, admin_password_hash, admin_role))
         print("Default admin user created: username='admin', password='password'")
 
-    # Add a default counselor user
-    counselor_username = 'counselor'
-    counselor_password_hash = generate_password_hash('password')
-    counselor_role = 'counselor'
-    cursor.execute("SELECT * FROM users WHERE username=?", (counselor_username,))
-    if not cursor.fetchone():
-        cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (counselor_username, counselor_password_hash, counselor_role))
-        print("Default counselor user created: username='counselor', password='password'")
 
     conn.commit()
     conn.close()

@@ -5,7 +5,7 @@ def create_new_user():
     print("--- Create New User ---")
     username = input("Enter a new username: ")
     password = input("Enter a password: ")
-    role = input("Enter user role (e.g., 'admin', 'counselor', or 'student'): ")
+    role = input("Enter user role (e.g., 'admin' or 'student'): ")
 
     password_hash = generate_password_hash(password)
 

@@ -419,6 +419,78 @@ def student_login():
         return jsonify({'message': 'Login successful', 'role': 'student', 'username': username}), 200
     return jsonify({'message': 'Invalid credentials or not a student account.'}), 401
 
+
+# Delete a user by username
+@app.route("/api/user/delete/<username>", methods=["DELETE"])
+def delete_user(username):
+    conn = None
+    try:
+        conn = sqlite3.connect('students.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE username = ?", (username,))
+        conn.commit()
+        if cursor.rowcount == 0:
+            return jsonify({'message': f'User {username} not found.'}), 404
+        return jsonify({'message': f'User {username} deleted successfully.'}), 200
+    except Exception as e:
+        return jsonify({'message': f'Error deleting user: {e}'}), 500
+    finally:
+        if conn:
+            conn.close()
+
+# Update a user's role (only allow 'admin' or 'student')
+@app.route("/api/user/update", methods=["POST"])
+def update_user():
+    data = request.json
+    username = data.get('username')
+    role = data.get('role')
+    if not username or not role:
+        return jsonify({'message': 'Username and role are required.'}), 400
+    if role not in ['admin', 'student']:
+        return jsonify({'message': 'Invalid role. Only admin or student allowed.'}), 400
+    conn = None
+    try:
+        conn = sqlite3.connect('students.db')
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET role = ? WHERE username = ?", (role, username))
+        conn.commit()
+        if cursor.rowcount == 0:
+            return jsonify({'message': f'User {username} not found.'}), 404
+        return jsonify({'message': f'User {username} role updated to {role}.'}), 200
+    except Exception as e:
+        return jsonify({'message': f'Error updating user: {e}'}), 500
+    finally:
+        if conn:
+            conn.close()
+
+
+# Get current student info (for dashboard)
+@app.route("/api/student/me", methods=["GET"])
+def get_student_me():
+    # For demo: get username from query param (frontend should send ?username=...)
+    username = request.args.get('username')
+    if not username:
+        return jsonify({"message": "Username required as query param."}), 400
+    merged_df, test_scores_df, error = get_data_from_db()
+    if error:
+        return jsonify({"message": error}), 500
+    student_info_df = merged_df[merged_df['student_id'] == username]
+    if student_info_df.empty:
+        return jsonify({"message": "Student not found."}), 404
+    final_df, model_error = predict_risk(merged_df)
+    if model_error:
+        return jsonify({"message": model_error}), 500
+    student_info_final = final_df[final_df['student_id'] == username]
+    student_info = student_info_final.to_dict(orient="records")[0]
+    student_info['fee_status'] = merged_df[merged_df['student_id'] == username]['fee_status'].iloc[0]
+    reasons, advice = get_counseling_insights(student_info, MODEL, FEATURES)
+    student_info['reasons'] = reasons
+    student_info['advice'] = advice
+    # Get test scores for this student
+    student_scores = test_scores_df[test_scores_df['student_id'] == username].to_dict(orient="records")
+    return jsonify({"info": student_info, "scores": student_scores})
+
+
 # -------------------- Run --------------------
 if __name__ == "__main__":
     train_model_once()

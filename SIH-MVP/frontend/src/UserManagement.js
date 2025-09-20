@@ -5,7 +5,7 @@ const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('counselor');
+    const [role, setRole] = useState('admin');
     const [message, setMessage] = useState('');
     const [refresh, setRefresh] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
@@ -101,7 +101,6 @@ const UserManagement = () => {
                         onChange={(e) => setRole(e.target.value)}
                         className="p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="counselor">Counselor</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
@@ -131,7 +130,6 @@ const UserManagement = () => {
                                             onChange={(e) => setEditRole(e.target.value)}
                                             className="p-1 border rounded-md"
                                         >
-                                            <option value="counselor">Counselor</option>
                                             <option value="admin">Admin</option>
                                         </select>
                                     ) : (

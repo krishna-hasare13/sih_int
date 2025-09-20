@@ -30,7 +30,7 @@ const LoginPage = () => {
 
             if (response.ok) {
                 if (data.role === 'admin') {
-                    login(data.role);
+                    login(data.role, username);
                     navigate('/dashboard');
                 } else {
                     setError('Only admin users can log in here. Please use the correct login page for your role.');

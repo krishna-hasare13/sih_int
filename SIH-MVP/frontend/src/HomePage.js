@@ -16,8 +16,7 @@ const HomePage = () => {
         <div className="bg-gray-100 min-h-screen text-gray-800">
             {/* Hero Section */}
             <header className="flex flex-col items-center justify-center text-center p-16 md:p-24 bg-white shadow-md">
-                <img src="/logo.png" alt="Abhyudaya Logo" className="h-24 w-24 mb-4" />
-                <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900">Abhyudaya</h1>
+                <img src="/logo.png" alt="Project Eklavya Logo" />                <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900">Project Eklavya</h1>
                 <p className="text-xl mt-2 text-gray-600">Empowering Futures • Growing Together</p>
                 <p className="text-md mt-1 text-blue-600 font-medium">Academic Excellence Platform</p>
                 <h2 className="text-3xl md:text-4xl font-bold mt-12 text-gray-800">Helping Students Stay on Track</h2>
@@ -50,16 +49,6 @@ const HomePage = () => {
                             className="mt-6 w-full py-3 px-4 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition"
                         >
                             Continue as Mentor
-                        </button>
-                    </div>
-                    <div className="flex-1 p-8 rounded-xl shadow-lg border border-gray-200 bg-white">
-                        <h3 className="text-2xl font-bold mb-4 text-red-600">Counselor Login</h3>
-                        <p className="text-gray-600">View student data and provide guidance with data-driven insights.</p>
-                        <button
-                            onClick={() => handleLoginRedirect('counselor')}
-                            className="mt-6 w-full py-3 px-4 rounded-md bg-red-600 text-white font-semibold hover:bg-red-700 transition"
-                        >
-                            Continue as Counselor
                         </button>
                     </div>
                 </div>

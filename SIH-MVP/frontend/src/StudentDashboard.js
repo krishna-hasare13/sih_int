@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -28,6 +30,14 @@ function StudentDashboard() {
   const [attendance, setAttendance] = useState([]);
   const [cgpa, setCgpa] = useState([]);
   const [studentName, setStudentName] = useState("");
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  // Logout handler for student
+  const handleLogout = () => {
+    logout();
+    localStorage.removeItem('studentUsername');
+    navigate('/student-login');
+  };
 
   useEffect(() => {
     // Get username from localStorage
@@ -104,7 +114,15 @@ function StudentDashboard() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Welcome back, {studentName}! 🎓</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Welcome back, {studentName}! 🎓</h1>
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition font-semibold"
+        >
+          Logout
+        </button>
+      </div>
       <p className="text-gray-600 mb-6">Here’s your academic progress overview.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
