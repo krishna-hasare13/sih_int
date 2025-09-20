@@ -16,7 +16,7 @@ const HomePage = () => {
         <div className="bg-gray-100 min-h-screen text-gray-800">
             {/* Hero Section */}
             <header className="flex flex-col items-center justify-center text-center p-16 md:p-24 bg-white shadow-md">
-                <img src="/logo.png" alt="Project Eklavya Logo" />                <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900">Project Eklavya</h1>
+                <img src="../public/logoeklavya.png" alt="Project Eklavya Logo" />                <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900">Project Eklavya</h1>
                 <p className="text-xl mt-2 text-gray-600">Empowering Futures • Growing Together</p>
                 <p className="text-md mt-1 text-blue-600 font-medium">Academic Excellence Platform</p>
                 <h2 className="text-3xl md:text-4xl font-bold mt-12 text-gray-800">Helping Students Stay on Track</h2>
