@@ -16,8 +16,6 @@ import RiskTrendChart from "./RiskTrendChart";
 import LoginPage from "./LoginPage";
 import UserManagement from "./UserManagement";
 import { AuthContext, AuthProvider } from './AuthContext';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from './HomePage';
 
 ChartJS.register(
   CategoryScale,
@@ -188,7 +186,7 @@ function MainApp() {
   ];
 
   if (!isLoggedIn) {
-      return <Navigate to="/login" replace />;
+      return <LoginPage />;
   }
 
   const renderMainContent = () => {
@@ -462,18 +460,10 @@ function MainApp() {
 }
 
 
-
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<MainApp />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+        <MainApp />
     </AuthProvider>
   )
 }
