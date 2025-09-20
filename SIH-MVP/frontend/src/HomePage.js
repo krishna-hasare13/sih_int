@@ -1,8 +1,72 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// FadeUpCard component for feature cards
+function FadeUpCard({ visible, delay, children }) {
+    return (
+        <div
+            className={
+                `bg-white/90 p-10 rounded-3xl shadow-xl border-0 transform transition-transform duration-500 hover:scale-105 ` +
+                (visible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
+            }
+            style={{ animationDelay: visible ? `${delay}s` : '0s' }}
+        >
+            {children}
+        </div>
+    );
+}
 
 const HomePage = () => {
     const navigate = useNavigate();
+    // Refs and state for scroll animations
+    const roleRef = useRef(null);
+    const featuresRef = useRef(null);
+    const studentCardRef = useRef(null);
+    const mentorCardRef = useRef(null);
+    const [roleVisible, setRoleVisible] = useState(false);
+    const [featuresVisible, setFeaturesVisible] = useState(false);
+    const [studentCardVisible, setStudentCardVisible] = useState(false);
+    const [mentorCardVisible, setMentorCardVisible] = useState(false);
+
+    useEffect(() => {
+        const ref = roleRef.current;
+        const observer = new window.IntersectionObserver(
+            ([entry]) => setRoleVisible(entry.isIntersecting),
+            { threshold: 0.3 }
+        );
+        if (ref) observer.observe(ref);
+        return () => { if (ref) observer.unobserve(ref); };
+    }, []);
+
+    useEffect(() => {
+        const ref = featuresRef.current;
+        const observer = new window.IntersectionObserver(
+            ([entry]) => setFeaturesVisible(entry.isIntersecting),
+            { threshold: 0.3 }
+        );
+        if (ref) observer.observe(ref);
+        return () => { if (ref) observer.unobserve(ref); };
+    }, []);
+
+    useEffect(() => {
+        const ref = studentCardRef.current;
+        const observer = new window.IntersectionObserver(
+            ([entry]) => setStudentCardVisible(entry.isIntersecting),
+            { threshold: 0.2 }
+        );
+        if (ref) observer.observe(ref);
+        return () => { if (ref) observer.unobserve(ref); };
+    }, []);
+
+    useEffect(() => {
+        const ref = mentorCardRef.current;
+        const observer = new window.IntersectionObserver(
+            ([entry]) => setMentorCardVisible(entry.isIntersecting),
+            { threshold: 0.2 }
+        );
+        if (ref) observer.observe(ref);
+        return () => { if (ref) observer.unobserve(ref); };
+    }, []);
 
     const handleLoginRedirect = (role) => {
         if (role === 'student') {
@@ -21,10 +85,10 @@ const HomePage = () => {
                         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-br from-emerald-300/30 via-sky-400/20 to-white/10 rounded-full blur-3xl animate-blob2"></div>
                 </div>
                 <img src="/logoeklavyafinal.png" alt="Project Eklavya Logo" style={{ height: 180, width: 'auto', marginBottom: 16, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)' }} className="z-10 transition-transform duration-500 hover:scale-105" />
-                <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-sky-400 drop-shadow-lg z-10 animate-slidein">Project Eklavya</h1>
-                <p className="text-2xl mt-4 text-gray-700 font-medium z-10 animate-fadein2">Empowering Futures • Growing Together</p>
+                <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-sky-400 drop-shadow-lg z-10 animate-slidein pb-2">Project Eklavya</h1>
+                <p className="text-2xl mt-4 text-gray-700 font-medium z-10 animate-fadein2 pb-1">Empowering Futures • Growing Together</p>
                 <p className="text-lg mt-1 text-blue-500 font-semibold z-10 animate-fadein3">Academic Excellence Platform</p>
-                <h2 className="text-3xl md:text-4xl font-bold mt-12 text-gray-800 z-10 animate-fadein4">Helping Students Stay on Track</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mt-12 text-gray-800 z-10 animate-fadein4 pb-2">Helping Students Stay on Track</h2>
                 <p className="text-lg md:text-xl max-w-3xl mt-4 text-gray-700 z-10 animate-fadein5">
                     AI-powered educational dashboard system for dropout prevention and student
                     counseling management. Empowering students, mentors, and guardians with
@@ -34,9 +98,23 @@ const HomePage = () => {
 
             {/* Login Portals Section */}
             <section className="py-20 px-4 text-center">
-                <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-emerald-600 to-yellow-500 mb-12 animate-slidein2">Choose Your Role</h2>
+                <h2
+                    ref={roleRef}
+                    className={
+                        `text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-emerald-600 to-yellow-500 mb-12 transition-all duration-700 pb-2 ` +
+                        (roleVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
+                    }
+                >
+                    Choose Your Role
+                </h2>
                 <div className="flex flex-col md:flex-row justify-center gap-10 max-w-5xl mx-auto items-stretch">
-                    <div className="flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-50 via-white to-yellow-50 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card1">
+                    <div
+                        ref={studentCardRef}
+                        className={
+                            `flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-50 via-white to-yellow-50 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card1 ` +
+                            (studentCardVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
+                        }
+                    >
                         <div>
                             <h3 className="text-2xl font-bold mb-4 text-sky-700">Student Login</h3>
                             <p className="text-gray-700">Access your academic progress and risk status.</p>
@@ -48,7 +126,13 @@ const HomePage = () => {
                             Continue as Student
                         </button>
                     </div>
-                    <div className="flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-100/80 via-white/90 to-yellow-100/80 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card2">
+                    <div
+                        ref={mentorCardRef}
+                        className={
+                            `flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-100/80 via-white/90 to-yellow-100/80 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card2 ` +
+                            (mentorCardVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
+                        }
+                    >
                         <div>
                             <h3 className="text-2xl font-bold mb-4 text-sky-700">Mentor Login</h3>
                             <p className="text-gray-700">Monitor all students, identify risks, and manage interventions.</p>
@@ -65,21 +149,30 @@ const HomePage = () => {
 
             {/* Features Section */}
             <section className="py-20 px-4 text-center bg-gradient-to-br from-sky-50/90 via-white/90 to-emerald-50/80">
-                <h2 className="text-4xl md:text-5xl font-bold mb-16 text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-yellow-500 animate-slidein3">Key Features</h2>
+                <h2
+                    ref={featuresRef}
+                    className={
+                        `text-4xl md:text-5xl font-bold mb-16 text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-yellow-500 animate-slidein3 transition-all duration-700 pb-2 ` +
+                        (featuresVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
+                    }
+                >
+                    Key Features
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-                    <div className="bg-white/90 p-10 rounded-3xl shadow-xl border-0 transform transition-transform duration-500 hover:scale-105 animate-card3">
+                    <FadeUpCard visible={featuresVisible} delay={0.1}>
                         <h3 className="text-2xl font-bold mb-4 text-sky-700">ML-Driven Risk Assessment</h3>
                         <p className="text-gray-700">Advanced machine learning algorithms analyze academic patterns to identify students at risk of dropping out before it's too late.</p>
-                    </div>
-                    <div className="bg-white/90 p-10 rounded-3xl shadow-xl border-0 transform transition-transform duration-500 hover:scale-105 animate-card4">
+                    </FadeUpCard>
+                    <FadeUpCard visible={featuresVisible} delay={0.3}>
                         <h3 className="text-2xl font-bold mb-4 text-emerald-700">Early Intervention System</h3>
                         <p className="text-gray-700">Proactive alerts and automated notifications enable timely interventions through structured counseling programs.</p>
-                    </div>
-                    <div className="bg-white/90 p-10 rounded-3xl shadow-xl border-0 transform transition-transform duration-500 hover:scale-105 animate-card5">
+                    </FadeUpCard>
+                    <FadeUpCard visible={featuresVisible} delay={0.5}>
                         <h3 className="text-2xl font-bold mb-4 text-yellow-600">Data-Driven Insights</h3>
                         <p className="text-gray-700">Comprehensive analytics and reporting tools provide actionable insights for educational stakeholders.</p>
-                    </div>
+                    </FadeUpCard>
                 </div>
+
             </section>
             {/* Animations (Tailwind custom classes or add to your CSS) */}
             <style>{`
@@ -106,9 +199,11 @@ const HomePage = () => {
                 .animate-card3 { animation: fadein2 1.2s 1.4s both; }
                 .animate-card4 { animation: fadein2 1.2s 1.6s both; }
                 .animate-card5 { animation: fadein2 1.2s 1.8s both; }
+                @keyframes fadeup { from { opacity: 0; transform: translateY(48px);} to { opacity: 1; transform: none;} }
+                .animate-fadeup { animation: fadeup 0.9s cubic-bezier(0.23, 1, 0.32, 1) both; }
             `}</style>
         </div>
     );
-};
+}
 
 export default HomePage;
