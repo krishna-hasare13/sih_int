@@ -38,24 +38,24 @@ const HomePage = () => {
                 <div className="flex flex-col md:flex-row justify-center gap-10 max-w-5xl mx-auto items-stretch">
                     <div className="flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-50 via-white to-yellow-50 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card1">
                         <div>
-                            <h3 className="text-2xl font-bold mb-4 text-purple-700">Student Login</h3>
+                            <h3 className="text-2xl font-bold mb-4 text-sky-700">Student Login</h3>
                             <p className="text-gray-700">Access your academic progress and risk status.</p>
                         </div>
                         <button
                             onClick={() => handleLoginRedirect('student')}
-                            className="mt-8 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-lg shadow-lg hover:from-purple-700 hover:to-pink-600 transition-all duration-300 animate-bouncein"
+                            className="mt-8 w-full py-3 px-4 rounded-xl bg-sky-700 text-white font-bold text-lg shadow-lg hover:bg-sky-800 transition-all duration-300 animate-bouncein"
                         >
                             Continue as Student
                         </button>
                     </div>
                     <div className="flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-100/80 via-white/90 to-yellow-100/80 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card2">
                         <div>
-                            <h3 className="text-2xl font-bold mb-4 text-purple-700">Mentor Login</h3>
+                            <h3 className="text-2xl font-bold mb-4 text-sky-700">Mentor Login</h3>
                             <p className="text-gray-700">Monitor all students, identify risks, and manage interventions.</p>
                         </div>
                         <button
                             onClick={() => handleLoginRedirect('mentor')}
-                            className="mt-8 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-lg shadow-lg hover:from-purple-700 hover:to-pink-600 transition-all duration-300 animate-bouncein2"
+                            className="mt-8 w-full py-3 px-4 rounded-xl bg-sky-700 text-white font-bold text-lg shadow-lg hover:bg-sky-800 transition-all duration-300 animate-bouncein2"
                         >
                             Continue as Mentor
                         </button>
