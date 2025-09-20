@@ -2,6 +2,51 @@ import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from './AuthContext';
 
 const UserManagement = () => {
+    // CSV Import/Export
+    const handleCSVUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const text = event.target.result;
+            // Parse CSV (assume header: username,password,role)
+            const lines = text.split(/\r?\n/).filter(Boolean);
+            const header = lines[0].split(',');
+            const usersToAdd = lines.slice(1).map(line => {
+                const values = line.split(',');
+                return {
+                    username: values[header.indexOf('username')],
+                    password: values[header.indexOf('password')],
+                    role: values[header.indexOf('role')] || 'admin',
+                };
+            });
+            // Send each user to backend
+            for (const user of usersToAdd) {
+                await fetch('http://127.0.0.1:5000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user),
+                });
+            }
+            setRefresh(prev => !prev);
+            alert('CSV import complete!');
+        };
+        reader.readAsText(file);
+    };
+
+    const handleExportCSV = () => {
+        if (!users.length) return;
+        const header = 'username,role';
+        const rows = users.map(u => `${u.username},${u.role}`);
+        const csvContent = [header, ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'users_export.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -73,6 +118,21 @@ const UserManagement = () => {
 
     return (
         <div className="bg-white p-8 rounded-3xl shadow-2xl">
+            {/* CSV Import/Export Controls */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                <div>
+                    <label className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-lg cursor-pointer hover:bg-blue-200 font-semibold transition">
+                        Upload CSV
+                        <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
+                    </label>
+                </div>
+                <button
+                    onClick={handleExportCSV}
+                    className="px-4 py-2 bg-green-100 text-green-700 rounded-lg font-semibold hover:bg-green-200 transition"
+                >
+                    Export Users as CSV
+                </button>
+            </div>
             <h2 className="text-3xl font-bold mb-6 text-gray-800">User Management</h2>
             <p className="text-gray-600 mb-8">Create new user accounts and manage existing ones.</p>
 

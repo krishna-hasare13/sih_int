@@ -201,174 +201,182 @@ function DashboardPage() {
     }
 
     return (
-        <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-          <header className="flex items-center mb-8">
-            <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
-              className="p-2 mr-4 bg-blue-600 text-white rounded-full md:hidden"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <h2 className="text-3xl font-bold text-gray-800">Student Risk Overview</h2>
-          </header>
+      <main className="flex-1 p-6 md:p-10 bg-gradient-to-br from-white via-sky-50 to-emerald-50 min-h-screen overflow-y-auto">
+        <header className="flex items-center mb-8">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2 mr-4 bg-blue-600 text-white rounded-full md:hidden shadow-md"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">Student Dashboard</h2>
+        </header>
 
-          {/* Top Summary Bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center p-6 mb-8 bg-white rounded-xl shadow-lg space-y-4 md:space-y-0">
-            {summaryData.map(item => (
+        {/* Top Summary Bar & Charts */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          <div className="col-span-1 md:col-span-2 flex flex-col gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center p-6 bg-white/90 rounded-2xl shadow-lg space-y-4 md:space-y-0 border border-gray-100">
+              {summaryData.map(item => (
                 <div key={item.label} className="flex items-center space-x-2">
-                    <span className={`w-3 h-3 rounded-full ${item.color.replace('text-', 'bg-')}`}></span>
-                    <p className="text-lg font-medium text-gray-600">{item.label}: <span className="font-bold">{item.count}</span></p>
+                  <span className={`w-3 h-3 rounded-full ${item.color.replace('text-', 'bg-')}`}></span>
+                  <p className="text-lg font-medium text-gray-600">{item.label}: <span className="font-bold">{item.count}</span></p>
                 </div>
-            ))}
-          </div>
-
-          {/* Search and Filter Controls */}
-          <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-6 space-y-4 md:space-y-0">
-              <input
-                  type="text"
-                  placeholder="Search by student ID..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <div className="flex space-x-2">
-                  {['All', 'High', 'Medium', 'Low'].map(filter => (
-                      <button
-                          key={filter}
-                          onClick={() => setRiskFilter(filter.toLowerCase())}
-                          className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                              riskFilter === filter.toLowerCase()
-                                  ? 'bg-blue-600 text-white'
-                                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}
-                      >
-                          {filter}
-                      </button>
-                  ))}
-              </div>
-          </div>
-
-          <div className="mb-12">
-              <h2 className="text-3xl font-bold mb-8 text-gray-800">Overall Course Performance</h2>
+              ))}
+            </div>
+            <div className="bg-white/90 rounded-2xl shadow-lg p-6 border border-gray-100">
+              <h2 className="text-2xl font-bold mb-6 text-gray-800">Overall Course Performance</h2>
               <SubjectScoresChart />
+            </div>
           </div>
+          <div className="col-span-1 flex flex-col gap-6">
+            <div className="bg-white/90 rounded-2xl shadow-lg p-6 border border-gray-100">
+              <RiskPieChart high={highRiskCount} medium={mediumRiskCount} low={lowRiskCount} />
+            </div>
+          </div>
+        </div>
 
-          {/* Student List */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {students.map((s) => (
-              <div
-                key={s.student_id}
-                className={`p-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer ${
-                  s.risk_level === "High" ? "bg-red-100 border-red-500 border" :
-                  s.risk_level === "Medium" ? "bg-yellow-100 border-yellow-500 border" :
-                  "bg-emerald-100 border-emerald-500 border"
+        {/* Search and Filter Controls */}
+        <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-8 space-y-4 md:space-y-0">
+          <input
+            type="text"
+            placeholder="Search by student ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white shadow-sm"
+          />
+          <div className="flex space-x-2">
+            {['All', 'High', 'Medium', 'Low'].map(filter => (
+              <button
+                key={filter}
+                onClick={() => setRiskFilter(filter.toLowerCase())}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors shadow-sm ${
+                  riskFilter === filter.toLowerCase()
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
-                onClick={() => fetchDetails(s.student_id)}
               >
-                <h3 className="text-xl font-semibold text-gray-900">ID: {s.student_id}</h3>
-                <p className="text-sm font-bold mt-2 text-gray-600">Risk: <span className="font-extrabold">{s.risk_level}</span></p>
-                <div className="mt-4 text-sm text-gray-700 space-y-1">
-                  <p>Attendance: <span className="font-medium">{s.attendance_percentage}%</span></p>
-                  <p>Avg Score: <span className="font-medium">{s.avg_test_score}</span></p>
-                  <p>Fee Status: <span className="font-medium">{s.fee_status}</span></p>
-                </div>
-              </div>
+                {filter}
+              </button>
             ))}
           </div>
-            {console.log("Selected Student:", selected)}
-          {/* Student Details */}
-          {selected && selected.info && (
-            <div className="bg-white p-10 rounded-3xl shadow-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Student {selected.info.student_id}
-                </h2>
-                <span className={`px-4 py-2 text-sm font-bold rounded-full ${
-                  selected.info.risk_level === "High" ? "bg-red-600 text-white" :
-                  selected.info.risk_level === "Medium" ? "bg-yellow-600 text-gray-900" :
-                  "bg-emerald-600 text-white"
-                }`}>
-                  {selected.info.risk_level} Risk
-                </span>
+        </div>
+
+        {/* Student List */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {students.map((s) => (
+            <div
+              key={s.student_id}
+              className={`p-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl cursor-pointer border-2 ${
+                s.risk_level === "High" ? "bg-red-50 border-red-300" :
+                s.risk_level === "Medium" ? "bg-yellow-50 border-yellow-300" :
+                "bg-emerald-50 border-emerald-300"
+              }`}
+              onClick={() => fetchDetails(s.student_id)}
+            >
+              <h3 className="text-xl font-semibold text-gray-900">ID: {s.student_id}</h3>
+              <p className="text-sm font-bold mt-2 text-gray-600">Risk: <span className="font-extrabold">{s.risk_level}</span></p>
+              <div className="mt-4 text-sm text-gray-700 space-y-1">
+                <p>Attendance: <span className="font-medium">{s.attendance_percentage}%</span></p>
+                <p>Avg Score: <span className="font-medium">{s.avg_test_score}</span></p>
+                <p>Fee Status: <span className="font-medium">{s.fee_status}</span></p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Student Details */}
+        {selected && selected.info && (
+          <div className="bg-white/95 p-10 rounded-3xl shadow-2xl border border-gray-200">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+              <h2 className="text-3xl font-bold text-gray-900">
+                Student {selected.info.student_id}
+              </h2>
+              <span className={`px-4 py-2 text-sm font-bold rounded-full shadow-md ${
+                selected.info.risk_level === "High" ? "bg-red-600 text-white" :
+                selected.info.risk_level === "Medium" ? "bg-yellow-600 text-gray-900" :
+                "bg-emerald-600 text-white"
+              }`}>
+                {selected.info.risk_level} Risk
+              </span>
+            </div>
+
+            <p className="text-gray-600 mb-6">Detailed information and risk factors for this student.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Left Column - Key Metrics */}
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-gray-700">Key Metrics</h3>
+                {editMode ? (
+                  <div className="space-y-3">
+                    <label className="block">
+                      <span className="text-sm text-gray-600">Attendance:</span>
+                      <input type="number" name="attendance_percentage" value={editableStudent.attendance_percentage} onChange={handleEditChange} className="mt-1 block w-full border rounded-md p-2"/>
+                    </label>
+                    <label className="block">
+                      <span className="text-sm text-gray-600">Fee Status:</span>
+                      <select name="fee_status" value={editableStudent.fee_status} onChange={handleEditChange} className="mt-1 block w-full border rounded-md p-2">
+                        <option value="Paid">Paid</option>
+                        <option value="Overdue">Overdue</option>
+                        <option value="Unknown">Unknown</option>
+                      </select>
+                    </label>
+                  </div>
+                ) : (
+                  <div className="space-y-3 text-gray-900">
+                    <p>Attendance: <span className="font-bold">{selected.info.attendance_percentage}%</span></p>
+                    <p>Avg Score: <span className="font-bold">{selected.info.avg_test_score}</span></p>
+                    <p>Fee Status: <span className="font-bold">{selected.info.fee_status}</span></p>
+                  </div>
+                )}
+
+                {userRole === 'admin' && (
+                  <div className="mt-6 space-x-2">
+                    {editMode ? (
+                      <>
+                        <button onClick={handleUpdate} className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">Save</button>
+                        <button onClick={() => setEditMode(false)} className="px-4 py-2 bg-gray-400 text-gray-900 rounded-lg shadow-md hover:bg-gray-500 transition">Cancel</button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">Edit</button>
+                        <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition">Delete</button>
+                      </>
+                    )}
+                    <button onClick={handleExport} className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition">Export CSV</button>
+                  </div>
+                )}
+
+                <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-700">Reasons for Risk</h3>
+                <button
+                  onClick={() => setShowReasons(!showReasons)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+                >
+                  {showReasons ? "Hide Counseling Points" : "Show Counseling Points"}
+                </button>
+                {showReasons && selected.info.reasons && selected.info.reasons.length > 0 ? (
+                  <ul className="list-disc list-inside mt-4 text-red-600 space-y-1">
+                    {selected.info.reasons.map((reason, index) => (
+                      <li key={index} className="text-sm font-medium">{reason}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  showReasons && <p className="mt-4 text-emerald-600 font-medium">No major issues detected.</p>
+                )}
               </div>
 
-              <p className="text-gray-600 mb-6">Detailed information and risk factors for this student.</p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Column - Key Metrics */}
-                <div>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-700">Key Metrics</h3>
-                  {editMode ? (
-                    <div className="space-y-3">
-                      <label className="block">
-                        <span className="text-sm text-gray-600">Attendance:</span>
-                        <input type="number" name="attendance_percentage" value={editableStudent.attendance_percentage} onChange={handleEditChange} className="mt-1 block w-full border rounded-md p-2"/>
-                      </label>
-                      <label className="block">
-                        <span className="text-sm text-gray-600">Fee Status:</span>
-                        <select name="fee_status" value={editableStudent.fee_status} onChange={handleEditChange} className="mt-1 block w-full border rounded-md p-2">
-                          <option value="Paid">Paid</option>
-                          <option value="Overdue">Overdue</option>
-                          <option value="Unknown">Unknown</option>
-                        </select>
-                      </label>
-                    </div>
-                  ) : (
-                    <div className="space-y-3 text-gray-900">
-                      <p>Attendance: <span className="font-bold">{selected.info.attendance_percentage}%</span></p>
-                      <p>Avg Score: <span className="font-bold">{selected.info.avg_test_score}</span></p>
-                      <p>Fee Status: <span className="font-bold">{selected.info.fee_status}</span></p>
-                    </div>
-                  )}
-
-                  {userRole === 'admin' && (
-                    <div className="mt-6 space-x-2">
-                      {editMode ? (
-                        <>
-                          <button onClick={handleUpdate} className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">Save</button>
-                          <button onClick={() => setEditMode(false)} className="px-4 py-2 bg-gray-400 text-gray-900 rounded-lg shadow-md hover:bg-gray-500 transition">Cancel</button>
-                        </>
-                      ) : (
-                        <>
-                          <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">Edit</button>
-                          <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition">Delete</button>
-                        </>
-                      )}
-                      <button onClick={handleExport} className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition">Export CSV</button>
-                    </div>
-                  )}
-
-                  <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-700">Reasons for Risk</h3>
-                  <button
-                    onClick={() => setShowReasons(!showReasons)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
-                  >
-                    {showReasons ? "Hide Counseling Points" : "Show Counseling Points"}
-                  </button>
-                  {showReasons && selected.info.reasons && selected.info.reasons.length > 0 ? (
-                    <ul className="list-disc list-inside mt-4 text-red-600 space-y-1">
-                      {selected.info.reasons.map((reason, index) => (
-                        <li key={index} className="text-sm font-medium">{reason}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    showReasons && <p className="mt-4 text-emerald-600 font-medium">No major issues detected.</p>
-                  )}
-                </div>
-
-                {/* Right Column - Chart */}
-                <div>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-700">Test Scores Over Time</h3>
-                  <div className="bg-gray-100 p-4 rounded-xl shadow-inner border border-gray-300">
-                    <RiskTrendChart studentId={selected.info.student_id} />
-                  </div>
+              {/* Right Column - Chart */}
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-gray-700">Test Scores Over Time</h3>
+                <div className="bg-gray-100 p-4 rounded-xl shadow-inner border border-gray-300">
+                  <RiskTrendChart studentId={selected.info.student_id} />
                 </div>
               </div>
             </div>
-          )}
-        </main>
+          </div>
+        )}
+      </main>
     );
   };
 
