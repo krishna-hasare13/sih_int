@@ -1,4 +1,13 @@
+
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useContext } from "react";
+import HomePage from "./HomePage";
+import LoginPage from "./LoginPage";
+import { AuthContext, AuthProvider } from './AuthContext';
+import RiskPieChart from "./RiskPieChart";
+import SubjectScoresChart from "./SubjectScoresChart";
+import RiskTrendChart from "./RiskTrendChart";
+import UserManagement from "./UserManagement";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,14 +19,7 @@ import {
   PointElement,
   LineElement
 } from "chart.js";
-import RiskPieChart from "./RiskPieChart";
-import SubjectScoresChart from "./SubjectScoresChart";
-import RiskTrendChart from "./RiskTrendChart";
-import LoginPage from "./LoginPage";
-import UserManagement from "./UserManagement";
-import { AuthContext, AuthProvider } from './AuthContext';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from './HomePage';
+
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +32,8 @@ ChartJS.register(
   LineElement
 );
 
-function MainApp() {
+// DashboardPage is the old MainApp, only shown after login
+function DashboardPage() {
   const [students, setStudents] = useState([]);
   const [selected, setSelected] = useState(null);
   const [showReasons, setShowReasons] = useState(false);
@@ -42,6 +45,7 @@ function MainApp() {
   const [editMode, setEditMode] = useState(false);
   const [editableStudent, setEditableStudent] = useState(null);
   const [view, setView] = useState('dashboard');
+
   const { isLoggedIn, userRole, logout, username } = useContext(AuthContext);
 
   useEffect(() => {
@@ -187,9 +191,7 @@ function MainApp() {
     { label: 'Low Risk', count: lowRiskCount, color: 'text-emerald-600', icon: '✅' },
   ];
 
-  if (!isLoggedIn) {
-      return <Navigate to="/login" replace />;
-  }
+
 
   const renderMainContent = () => {
     if (view === 'userManagement' && userRole === 'admin') {
@@ -463,19 +465,35 @@ function MainApp() {
 
 
 
+// Handles routing and auth logic
+function AppRoutes() {
+  const { isLoggedIn } = useContext(AuthContext);
+  const location = useLocation();
+
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          isLoggedIn ? <DashboardPage /> : <Navigate to="/login" state={{ from: location }} replace />
+        }
+      />
+      {/* Add more routes as needed */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<MainApp />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <AppRoutes />
       </Router>
     </AuthProvider>
-  )
+  );
 }
 
 export default App;

@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -7,6 +9,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [validationError, setValidationError] = useState('');
     const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -28,6 +31,7 @@ const LoginPage = () => {
 
             if (response.ok) {
                 login(data.role);
+                navigate('/dashboard');
             } else {
                 setError(data.message);
             }
