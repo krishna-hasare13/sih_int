@@ -42,9 +42,8 @@ def get_data_from_db():
     try:
         conn = sqlite3.connect('students.db')
         students_df = pd.read_sql_query("SELECT * FROM students", conn)
-        print("Fetched students data:", students_df.head())
         test_scores_df = pd.read_sql_query("SELECT * FROM test_scores", conn)
-        print("Fetched test scores data:", test_scores_df.head())
+        
         students_df['student_id'] = students_df['student_id'].astype(str)
         test_scores_df['student_id'] = test_scores_df['student_id'].astype(str)
 
@@ -53,7 +52,7 @@ def get_data_from_db():
 
         merged_df = pd.merge(students_df, avg_scores_df, on='student_id', how='left')
         merged_df['avg_test_score'] = merged_df['avg_test_score'].fillna(0)
-        print("Merged data:", merged_df.head())
+        
         return merged_df, test_scores_df, None
     except sqlite3.Error as e:
         return pd.DataFrame(), pd.DataFrame(), f"Database connection error: {e}"
@@ -124,13 +123,13 @@ def predict_risk(current_df):
     )
 
     current_df_processed = pd.concat([current_df.drop('fee_status', axis=1), current_encoded], axis=1)
-    print('126')
+    
     X_predict = current_df_processed[FEATURES]
-    print("Features for prediction:", X_predict.head())
+    
     
     
     X_predict_scaled = SCALER.transform(X_predict)
-    print("Scaled features:", X_predict_scaled[:5])
+  
     
     
     predictions = MODEL.predict_proba(X_predict_scaled)
@@ -210,15 +209,15 @@ def register():
 @app.route("/api/students", methods=["GET"])
 def get_students():
     merged_df, _, error = get_data_from_db()
-    print("(MAIN): Merged DataFrame head:", merged_df.head())
+
     if error:
-        print(error)
+       
         return jsonify({"message": error}), 500
     if merged_df.empty:
         return jsonify({"message": "No data found."}), 404
 
     final_df, model_error = predict_risk(merged_df)
-    print("(MAIN): Final DataFrame with Predictions head:", final_df.head())
+   
     if model_error:
         return jsonify({"message": model_error}), 500
 

@@ -29,13 +29,11 @@ const LoginPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                login(data.role);
-                // Store username for student dashboard use
-                if (data.role === 'student') {
-                    localStorage.setItem('studentUsername', username);
-                    navigate('/student-dashboard');
-                } else {
+                if (data.role === 'admin') {
+                    login(data.role);
                     navigate('/dashboard');
+                } else {
+                    setError('Only admin users can log in here. Please use the correct login page for your role.');
                 }
             } else {
                 setError(data.message);
