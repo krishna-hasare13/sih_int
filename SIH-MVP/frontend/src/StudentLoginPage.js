@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 const StudentLoginPage = () => {
   const [username, setUsername] = useState('');
@@ -7,6 +8,7 @@ const StudentLoginPage = () => {
   const [error, setError] = useState('');
   const [validationError, setValidationError] = useState('');
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,7 +21,7 @@ const StudentLoginPage = () => {
     }
 
     try {
-  const response = await fetch('http://127.0.0.1:5000/api/student-login', {
+      const response = await fetch('http://127.0.0.1:5000/api/student-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -28,6 +30,7 @@ const StudentLoginPage = () => {
 
       if (response.ok && data.role === 'student') {
         localStorage.setItem('studentUsername', username);
+        login('student', username); // Set AuthContext state
         navigate('/student-dashboard');
       } else {
         setError(data.message || 'Invalid credentials or not a student account.');
