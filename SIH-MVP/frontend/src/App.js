@@ -80,169 +80,182 @@ function DashboardPage() {
     const lowRiskCount = students.filter((s) => s.risk_level === "Low").length;
     const totalStudents = students.length;
 
-    const renderMainContent = () => {
-        if (view === 'userManagement' && userRole === 'admin') {
-            return (
-                <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-                    <UserManagement />
-                </main>
-            );
-        }
-    
-        return (
-            <main className="flex-1 p-6 md:p-8 overflow-y-auto animate-fadein">
-                <header className="flex flex-col md:flex-row justify-between md:items-center mb-8">
-                    <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-emerald-600">
-                        Student Risk Overview
-                    </h2>
-                    <div className="flex items-center mt-4 md:mt-0 p-4 bg-white/60 backdrop-blur-sm rounded-xl shadow-md">
-                        <div className="text-center px-4 border-r border-gray-200">
-                            <p className="text-2xl font-bold text-sky-600">{totalStudents}</p>
-                            <p className="text-sm text-gray-500">Total Students</p>
-                        </div>
-                        <div className="text-center px-4 border-r border-gray-200">
-                            <p className="text-2xl font-bold text-red-500">{highRiskCount}</p>
-                            <p className="text-sm text-gray-500">High Risk</p>
-                        </div>
-                        <div className="text-center px-4 border-r border-gray-200">
-                            <p className="text-2xl font-bold text-amber-500">{mediumRiskCount}</p>
-                            <p className="text-sm text-gray-500">Medium Risk</p>
-                        </div>
-                         <div className="text-center px-4">
-                            <p className="text-2xl font-bold text-emerald-500">{lowRiskCount}</p>
-                            <p className="text-sm text-gray-500">Low Risk</p>
-                        </div>
+  const renderMainContent = () => {
+    if (view === 'userManagement' && userRole === 'admin') {
+      return <UserManagement />;
+    }
+
+    return (
+        <main className="flex-1 p-8 md:p-12 overflow-y-auto">
+          <header className="flex items-center mb-8">
+            <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+              className="p-2 mr-4 bg-blue-600 text-white rounded-full md:hidden"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h2 className="text-3xl font-bold text-gray-800">Student Risk Overview</h2>
+          </header>
+
+          {/* Top Summary Bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center p-6 mb-8 bg-white rounded-xl shadow-lg space-y-4 md:space-y-0">
+            {summaryData.map(item => (
+                <div key={item.label} className="flex items-center space-x-2">
+                    <span className={`w-3 h-3 rounded-full ${item.color.replace('text-', 'bg-')}`}></span>
+                    <p className="text-lg font-medium text-gray-600">{item.label}: <span className="font-bold">{item.count}</span></p>
+                </div>
+            ))}
+          </div>
+
+          {/* Search and Filter Controls */}
+          <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-6 space-y-4 md:space-y-0">
+              <input
+                  type="text"
+                  placeholder="Search by student ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div className="flex space-x-2">
+                  {['All', 'High', 'Medium', 'Low'].map(filter => (
+                      <button
+                          key={filter}
+                          onClick={() => setRiskFilter(filter.toLowerCase())}
+                          className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                              riskFilter === filter.toLowerCase()
+                                  ? 'bg-blue-600 text-white'
+                                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          }`}
+                      >
+                          {filter}
+                      </button>
+                  ))}
+              </div>
+          </div>
+
+          <div className="mb-12">
+              <h2 className="text-3xl font-bold mb-8 text-gray-800">Overall Course Performance</h2>
+              <SubjectScoresChart />
+          </div>
+
+          {/* Student List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {students.map((s) => (
+              <div
+                key={s.student_id}
+                className={`p-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl cursor-pointer ${
+                  s.risk_level === "High" ? "bg-red-100 border-red-500 border" :
+                  s.risk_level === "Medium" ? "bg-yellow-100 border-yellow-500 border" :
+                  "bg-emerald-100 border-emerald-500 border"
+                }`}
+                onClick={() => fetchDetails(s.student_id)}
+              >
+                <h3 className="text-xl font-semibold text-gray-900">ID: {s.student_id}</h3>
+                <p className="text-sm font-bold mt-2 text-gray-600">Risk: <span className="font-extrabold">{s.risk_level}</span></p>
+                <div className="mt-4 text-sm text-gray-700 space-y-1">
+                  <p>Attendance: <span className="font-medium">{s.attendance_percentage}%</span></p>
+                  <p>Avg Score: <span className="font-medium">{s.avg_test_score}</span></p>
+                  <p>Fee Status: <span className="font-medium">{s.fee_status}</span></p>
+                </div>
+              </div>
+            ))}
+          </div>
+            {console.log("Selected Student:", selected)}
+          {/* Student Details */}
+          {selected && selected.info && (
+            <div className="bg-white p-10 rounded-3xl shadow-2xl">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold text-gray-900">
+                  Student {selected.info.student_id}
+                </h2>
+                <span className={`px-4 py-2 text-sm font-bold rounded-full ${
+                  selected.info.risk_level === "High" ? "bg-red-600 text-white" :
+                  selected.info.risk_level === "Medium" ? "bg-yellow-600 text-gray-900" :
+                  "bg-emerald-600 text-white"
+                }`}>
+                  {selected.info.risk_level} Risk
+                </span>
+              </div>
+
+              <p className="text-gray-600 mb-6">Detailed information and risk factors for this student.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Left Column - Key Metrics */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-3 text-gray-700">Key Metrics</h3>
+                  {editMode ? (
+                    <div className="space-y-3">
+                      <label className="block">
+                        <span className="text-sm text-gray-600">Attendance:</span>
+                        <input type="number" name="attendance_percentage" value={editableStudent.attendance_percentage} onChange={handleEditChange} className="mt-1 block w-full border rounded-md p-2"/>
+                      </label>
+                      <label className="block">
+                        <span className="text-sm text-gray-600">Fee Status:</span>
+                        <select name="fee_status" value={editableStudent.fee_status} onChange={handleEditChange} className="mt-1 block w-full border rounded-md p-2">
+                          <option value="Paid">Paid</option>
+                          <option value="Overdue">Overdue</option>
+                          <option value="Unknown">Unknown</option>
+                        </select>
+                      </label>
                     </div>
-                </header>
-    
-                <div className="mb-8 p-4 bg-white/60 backdrop-blur-sm rounded-xl shadow-lg flex flex-col md:flex-row items-center gap-4">
-                    <div className="relative w-full md:w-1/2">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2"><SearchIcon/></span>
-                        <input
-                            type="text" placeholder="Search by student ID or name..." value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-white/50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
-                        />
+                  ) : (
+                    <div className="space-y-3 text-gray-900">
+                      <p>Attendance: <span className="font-bold">{selected.info.attendance_percentage}%</span></p>
+                      <p>Avg Score: <span className="font-bold">{selected.info.avg_test_score}</span></p>
+                      <p>Fee Status: <span className="font-bold">{selected.info.fee_status}</span></p>
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <span className="font-semibold text-gray-600">Filter by:</span>
-                        {['All', 'High', 'Medium', 'Low'].map(filter => (
-                            <button key={filter} onClick={() => setRiskFilter(filter.toLowerCase())}
-                                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                                riskFilter === filter.toLowerCase() ? 'bg-sky-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-sky-100'
-                                }`}>
-                                {filter}
-                            </button>
-                        ))}
+                  )}
+
+                  {userRole === 'admin' && (
+                    <div className="mt-6 space-x-2">
+                      {editMode ? (
+                        <>
+                          <button onClick={handleUpdate} className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">Save</button>
+                          <button onClick={() => setEditMode(false)} className="px-4 py-2 bg-gray-400 text-gray-900 rounded-lg shadow-md hover:bg-gray-500 transition">Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">Edit</button>
+                          <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition">Delete</button>
+                        </>
+                      )}
+                      <button onClick={handleExport} className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition">Export CSV</button>
                     </div>
+                  )}
+
+                  <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-700">Reasons for Risk</h3>
+                  <button
+                    onClick={() => setShowReasons(!showReasons)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+                  >
+                    {showReasons ? "Hide Counseling Points" : "Show Counseling Points"}
+                  </button>
+                  {showReasons && selected.info.reasons && selected.info.reasons.length > 0 ? (
+                    <ul className="list-disc list-inside mt-4 text-red-600 space-y-1">
+                      {selected.info.reasons.map((reason, index) => (
+                        <li key={index} className="text-sm font-medium">{reason}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    showReasons && <p className="mt-4 text-emerald-600 font-medium">No major issues detected.</p>
+                  )}
                 </div>
 
-                <section className="mb-8">
-                    <h3 className="text-3xl font-bold mb-4 text-gray-700">Overall Course Performance</h3>
-                    <SubjectScoresChart />
-                </section>
-    
-                <h3 className="text-3xl font-bold mb-4 text-gray-700">Student Roster</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-                    {students.map((s) => (
-                        <div key={s.student_id}
-                            className={`bg-gradient-to-br from-white/80 to-white/50 backdrop-blur-sm rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-t-4 ${
-                                s.risk_level === "High" ? "border-red-500" :
-                                s.risk_level === "Medium" ? "border-amber-500" :
-                                "border-emerald-500"
-                            }`}
-                            onClick={() => fetchDetails(s.student_id)}>
-                            <div className="p-5">
-                                <div className="flex justify-between items-start">
-                                    <h3 className="text-lg font-bold text-gray-800">ID: {s.student_id}</h3>
-                                    <span className={`px-3 py-1 text-xs font-bold rounded-full capitalize ${
-                                        s.risk_level === "High" ? "bg-red-100 text-red-800" :
-                                        s.risk_level === "Medium" ? "bg-amber-100 text-amber-800" :
-                                        "bg-emerald-100 text-emerald-800"
-                                    }`}>{s.risk_level}</span>
-                                </div>
-                                <div className="mt-4 text-sm text-gray-600 space-y-2">
-                                    <p>Attendance: <span className="font-semibold text-gray-800">{s.attendance_percentage}%</span></p>
-                                    <p>Avg Score: <span className="font-semibold text-gray-800">{s.avg_test_score}</span></p>
-                                    <p>Fee Status: <span className="font-semibold text-gray-800">{s.fee_status}</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                {/* Right Column - Chart */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-3 text-gray-700">Test Scores Over Time</h3>
+                  <div className="bg-gray-100 p-4 rounded-xl shadow-inner border border-gray-300">
+                    <RiskTrendChart studentId={selected.info.student_id} />
+                  </div>
                 </div>
-                
-                {selected && (
-                    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-                        <div className="bg-gradient-to-br from-gray-50 to-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl p-8 animate-fadein" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex items-center justify-between mb-4">
-                               <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-emerald-600">
-                                   Student {selected.info.student_id}
-                               </h2>
-                               <button onClick={() => setSelected(null)} className="p-2 text-gray-500 bg-gray-100 rounded-full hover:bg-gray-200 transition"><CloseIcon /></button>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Key Metrics</h3>
-                                    {editMode ? (
-                                        <div className="space-y-4 p-4 bg-sky-50/50 rounded-lg border border-sky-200">
-                                            <label className="block text-sm font-medium text-gray-700">Attendance Percentage
-                                                <input type="number" name="attendance_percentage" value={editableStudent.attendance_percentage} onChange={handleEditChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"/>
-                                            </label>
-                                            <label className="block text-sm font-medium text-gray-700">Fee Status
-                                                <select name="fee_status" value={editableStudent.fee_status} onChange={handleEditChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                                    <option>Paid</option><option>Overdue</option><option>Unknown</option>
-                                                </select>
-                                            </label>
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-3 text-gray-800 text-lg p-4 bg-gray-100/60 rounded-lg">
-                                            <p>Attendance: <span className="font-bold">{selected.info.attendance_percentage}%</span></p>
-                                            <p>Avg Score: <span className="font-bold">{selected.info.avg_test_score}</span></p>
-                                            <p>Fee Status: <span className="font-bold">{selected.info.fee_status}</span></p>
-                                        </div>
-                                    )}
-
-                                    {userRole === 'admin' && (
-                                        <div className="mt-6 flex flex-wrap gap-2">
-                                            {editMode ? (
-                                                <>
-                                                    <button onClick={handleUpdate} className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition">Save Changes</button>
-                                                    <button onClick={() => setEditMode(false)} className="flex-1 px-4 py-2 bg-gray-400 text-white rounded-lg shadow-md hover:bg-gray-500 transition">Cancel</button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-sky-600 text-white rounded-lg shadow-md hover:bg-sky-700 transition">Edit</button>
-                                                    <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition">Delete</button>
-                                                    <button onClick={handleExport} className="px-4 py-2 bg-violet-600 text-white rounded-lg shadow-md hover:bg-violet-700 transition">Export CSV</button>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    <h3 className="text-xl font-semibold mt-8 mb-3 text-gray-700">Counseling Points</h3>
-                                    {selected.info.reasons && selected.info.reasons.length > 0 ? (
-                                        <ul className="list-disc list-inside space-y-2 p-4 bg-red-50 text-red-700 rounded-lg">
-                                            {selected.info.reasons.map((reason, index) => (
-                                                <li key={index} className="font-medium">{reason}</li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="mt-4 p-4 bg-emerald-50 text-emerald-700 font-medium rounded-lg">No major issues detected.</p>
-                                    )}
-                                </div>
-                                
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Test Scores Over Time</h3>
-                                    <RiskTrendChart studentId={selected.info.student_id} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </main>
-        );
-    };
+              </div>
+            </div>
+          )}
+        </main>
+    );
+  };
 
     return (
         <div className="flex bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-gray-800 min-h-screen font-sans">

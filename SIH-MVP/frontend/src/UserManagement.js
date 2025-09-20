@@ -10,6 +10,51 @@ const CancelIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 
 
 
 const UserManagement = () => {
+    // CSV Import/Export
+    const handleCSVUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const text = event.target.result;
+            // Parse CSV (assume header: username,password,role)
+            const lines = text.split(/\r?\n/).filter(Boolean);
+            const header = lines[0].split(',');
+            const usersToAdd = lines.slice(1).map(line => {
+                const values = line.split(',');
+                return {
+                    username: values[header.indexOf('username')],
+                    password: values[header.indexOf('password')],
+                    role: values[header.indexOf('role')] || 'admin',
+                };
+            });
+            // Send each user to backend
+            for (const user of usersToAdd) {
+                await fetch('http://127.0.0.1:5000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user),
+                });
+            }
+            setRefresh(prev => !prev);
+            alert('CSV import complete!');
+        };
+        reader.readAsText(file);
+    };
+
+    const handleExportCSV = () => {
+        if (!users.length) return;
+        const header = 'username,role';
+        const rows = users.map(u => `${u.username},${u.role}`);
+        const csvContent = [header, ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'users_export.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -79,12 +124,9 @@ const UserManagement = () => {
     };
 
     return (
-        <div className="p-8 bg-gradient-to-br from-sky-50 via-white to-emerald-50 rounded-3xl shadow-2xl animate-fadein">
-            <h2 className="text-4xl font-bold mb-2 flex items-center text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-emerald-600">
-                <UserGroupIcon />
-                User Management
-            </h2>
-            <p className="text-gray-600 mb-8 ml-12">Create new user accounts and manage existing ones.</p>
+        <div className="bg-white p-8 rounded-3xl shadow-2xl">
+            <h2 className="text-3xl font-bold mb-6 text-gray-800">User Management</h2>
+            <p className="text-gray-600 mb-8">Create new user accounts and manage existing ones.</p>
 
             {/* --- Create User Form --- */}
             <form onSubmit={handleCreateUser} className="space-y-4 mb-10 p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/80 shadow-lg">
