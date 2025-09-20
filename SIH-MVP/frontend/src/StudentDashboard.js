@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
-import Papa from "papaparse";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,40 +23,51 @@ ChartJS.register(
   LineElement
 );
 
+
 function StudentDashboard() {
   const [attendance, setAttendance] = useState([]);
   const [cgpa, setCgpa] = useState([]);
-  const studentName = "Priya Sharma"; // Can be dynamic if you have a login system
+  const [studentName, setStudentName] = useState("");
 
   useEffect(() => {
-    Papa.parse("/student.csv", {
-      download: true,
-      header: true,
-      complete: (results) => {
-        const studentData = results.data.find(
-          (row) => row.name === studentName
-        );
-        if (studentData) {
-          setAttendance([
-            Number(studentData.sem1_att),
-            Number(studentData.sem2_att),
-            Number(studentData.sem3_att),
-            Number(studentData.sem4_att),
-            Number(studentData.sem5_att),
-            Number(studentData.sem6_att)
-          ]);
-
-          setCgpa([
-            Number(studentData.sem1_cgpa),
-            Number(studentData.sem2_cgpa),
-            Number(studentData.sem3_cgpa),
-            Number(studentData.sem4_cgpa),
-            Number(studentData.sem5_cgpa),
-            Number(studentData.sem6_cgpa)
-          ]);
-        }
-      },
-    });
+    // Get username from localStorage
+    const username = localStorage.getItem('studentUsername');
+    if (!username) {
+      setStudentName("Student");
+      setAttendance([]);
+      setCgpa([]);
+      return;
+    }
+    // Fetch the logged-in student's data from backend using username
+    fetch(`http://127.0.0.1:5000/api/student/${username}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch student data");
+        return res.json();
+      })
+      .then((data) => {
+        setStudentName(data.info?.name || "Student");
+        setAttendance([
+          Number(data.info?.sem1_att),
+          Number(data.info?.sem2_att),
+          Number(data.info?.sem3_att),
+          Number(data.info?.sem4_att),
+          Number(data.info?.sem5_att),
+          Number(data.info?.sem6_att)
+        ]);
+        setCgpa([
+          Number(data.info?.sem1_cgpa),
+          Number(data.info?.sem2_cgpa),
+          Number(data.info?.sem3_cgpa),
+          Number(data.info?.sem4_cgpa),
+          Number(data.info?.sem5_cgpa),
+          Number(data.info?.sem6_cgpa)
+        ]);
+      })
+      .catch((err) => {
+        setStudentName("Student");
+        setAttendance([]);
+        setCgpa([]);
+      });
   }, []);
 
   const attendanceData = {
@@ -85,7 +95,8 @@ function StudentDashboard() {
     ],
   };
 
-  // Dummy events (you can also fetch them dynamically later)
+
+  // Dummy events (replace with backend fetch if available)
   const events = [
     { id: 1, title: "Mentor Session - Database Systems", date: "25 Sep 2025" },
     { id: 2, title: "Career Guidance Meeting", date: "30 Sep 2025" },

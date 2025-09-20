@@ -5,7 +5,11 @@ const HomePage = () => {
     const navigate = useNavigate();
 
     const handleLoginRedirect = (role) => {
-        navigate(`/login?role=${role}`);
+        if (role === 'student') {
+            navigate('/student-login');
+        } else {
+            navigate(`/login?role=${role}`);
+        }
     };
 
     return (

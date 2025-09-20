@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useEffect, useState, useContext } from "react";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
+import StudentDashboard from "./StudentDashboard";
+import StudentLoginPage from "./StudentLoginPage";
 import { AuthContext, AuthProvider } from './AuthContext';
 import RiskPieChart from "./RiskPieChart";
 import SubjectScoresChart from "./SubjectScoresChart";
@@ -467,20 +469,30 @@ function DashboardPage() {
 
 // Handles routing and auth logic
 function AppRoutes() {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userRole } = useContext(AuthContext);
   const location = useLocation();
 
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/student-login" element={<StudentLoginPage />} />
       <Route
         path="/dashboard"
         element={
-          isLoggedIn ? <DashboardPage /> : <Navigate to="/login" state={{ from: location }} replace />
+          isLoggedIn && (userRole === 'mentor' || userRole === 'admin')
+            ? <DashboardPage />
+            : <Navigate to="/login" state={{ from: location }} replace />
         }
       />
-      {/* Add more routes as needed */}
+      <Route
+        path="/student-dashboard"
+        element={
+          isLoggedIn && userRole === 'student'
+            ? <StudentDashboard />
+            : <Navigate to="/student-login" state={{ from: location }} replace />
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

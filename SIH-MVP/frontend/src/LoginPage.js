@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
-
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -31,7 +30,13 @@ const LoginPage = () => {
 
             if (response.ok) {
                 login(data.role);
-                navigate('/dashboard');
+                // Store username for student dashboard use
+                if (data.role === 'student') {
+                    localStorage.setItem('studentUsername', username);
+                    navigate('/student-dashboard');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
                 setError(data.message);
             }

@@ -398,6 +398,27 @@ def update_student():
     finally:
         if conn:
             conn.close()
+            
+            
+# Student-only login endpoint
+@app.route("/api/student-login", methods=['POST'])
+def student_login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'message': 'Username and password required'}), 400
+
+    conn = sqlite3.connect('students.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT password, role FROM users WHERE username=?", (username,))
+    user_data = cursor.fetchone()
+    conn.close()
+
+    if user_data and user_data[1] == 'student' and check_password_hash(user_data[0], password):
+        return jsonify({'message': 'Login successful', 'role': 'student', 'username': username}), 200
+    return jsonify({'message': 'Invalid credentials or not a student account.'}), 401
 
 # -------------------- Run --------------------
 if __name__ == "__main__":
