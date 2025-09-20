@@ -43,52 +43,52 @@ const LoginPage = () => {
         }
     };
 
-    return (
-        <div className="flex items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-            <div className="w-full max-w-sm p-10 space-y-8 bg-white/90 backdrop-blur-sm border border-white/40 rounded-3xl shadow-2xl transition-all duration-300">
-                <h2 className="text-5xl font-extrabold text-center text-gray-900">Welcome</h2>
-                <p className="text-center text-gray-600 text-lg">Sign in to your AI-powered student dashboard.</p>
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div>
-                        <label className="block text-base font-medium text-gray-700 mb-2">Username</label>
-                        <input
-                            type="text"
-                            className="mt-1 block w-full px-5 py-3 border border-gray-300 bg-white/70 text-gray-800 placeholder-gray-500 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300 text-lg"
-                            placeholder="Enter your username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-base font-medium text-gray-700 mb-2">Password</label>
-                        <input
-                            type="password"
-                            className="mt-1 block w-full px-5 py-3 border border-gray-300 bg-white/70 text-gray-800 placeholder-gray-500 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-300 text-lg"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    {validationError && (
-                        <div className="flex items-center p-3 rounded-lg bg-red-100 text-red-700 font-medium text-sm">
-                            {validationError}
-                        </div>
-                    )}
-                    {error && (
-                        <div className="flex items-center p-3 rounded-lg bg-red-100 text-red-700 font-medium text-sm">
-                            🚨 {error}
-                        </div>
-                    )}
-                    <button
-                        type="submit"
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-xl font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-white/50 transition-all duration-300"
-                    >
-                        Sign in
-                    </button>
-                </form>
+   return (
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-green-100 to-yellow-100 p-6">
+      <div className="w-full max-w-md p-10 space-y-8 bg-white/90 backdrop-blur-sm border border-white/40 rounded-3xl shadow-2xl">
+        <h2 className="text-4xl font-extrabold text-center text-blue-700 mb-2">Admin Login</h2>
+        <p className="text-center text-gray-600 text-lg mb-6">Sign in to view Students dashboard.</p>
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label className="block text-base font-medium text-gray-700 mb-2">Username</label>
+            <input
+              type="text"
+              className="mt-1 block w-full px-5 py-3 border border-gray-300 bg-white/70 text-gray-800 placeholder-gray-500 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-lg"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-base font-medium text-gray-700 mb-2">Password</label>
+            <input
+              type="password"
+              className="mt-1 block w-full px-5 py-3 border border-gray-300 bg-white/70 text-gray-800 placeholder-gray-500 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-lg"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          {validationError && (
+            <div className="flex items-center p-3 rounded-lg bg-red-100 text-red-700 font-medium text-sm">
+              {validationError}
             </div>
-        </div>
-    );
+          )}
+          {error && (
+            <div className="flex items-center p-3 rounded-lg bg-red-100 text-red-700 font-medium text-sm">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-xl font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 focus:ring-offset-white/50 transition-all duration-300"
+          >
+            Sign in
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default LoginPage;
