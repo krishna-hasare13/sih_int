@@ -1,103 +1,211 @@
 import pandas as pd
 import sqlite3
-from werkzeug.security import generate_password_hash
-import glob
+import json
 import os
+from typing import List, Dict
 
-REQUIRED_COLUMNS = {
-    "student_id",
-    "attendance_percentage",
-    "fee_status",
-    "subject",
-    "test_score",
-    "test_number"
-}
-
-def validate_csv(file_path):
-    """Validate if the CSV has all required columns."""
-    try:
-        df = pd.read_csv(file_path)
-    except Exception as e:
-        print(f"❌ Error reading '{file_path}': {e}")
-        return None
-
-    # Check columns
-    missing = REQUIRED_COLUMNS - set(df.columns)
-    if missing:
-        print(f"❌ Error: '{file_path}' is missing required columns: {', '.join(missing)}")
-        return None
+def load_and_validate_csv(file_path: str) -> pd.DataFrame:
+    """Load and validate the CSV file."""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"CSV file {file_path} not found")
     
-    print(f"✅ CSV validation successful: {file_path}")
+    df = pd.read_csv(file_path)
+    expected_columns = [
+        'student_id', 'name', 'prn', 'fee_status', 'attendance_percentage',
+        'avgMarks', 'sem1_att', 'sem2_att', 'sem3_att', 'sem4_att', 'sem5_att',
+        'sem6_att', 'sem1_cgpa', 'sem2_cgpa', 'sem3_cgpa', 'sem4_cgpa',
+        'sem5_cgpa', 'sem6_cgpa', 'credits', 'wellbeing', 'subjects_json'
+    ]
+    
+    missing = [col for col in expected_columns if col not in df.columns]
+    if missing:
+        raise ValueError(f"Missing columns in CSV: {missing}")
+    
     return df
 
+def parse_subjects_json(subjects_json: str) -> List[Dict]:
+    """Parse subjects_json into a list of subject-score dictionaries."""
+    try:
+        return json.loads(subjects_json)
+    except json.JSONDecodeError as e:
+        print(f"Error parsing subjects_json: {e}")
+        return []
 
-def setup_database():
-    # Look for CSV files in current directory
-    csv_files = glob.glob("*.csv")
+def transform_data(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Transform CSV data into students and test_scores DataFrames."""
+    students_data = []
+    test_scores_data = []
+    
+    for _, row in df.iterrows():
+        # Student data
+        student = {
+            'student_id': row['student_id'],
+            'name': row['name'],
+            'prn': row['prn'],
+            'fee_status': row['fee_status'],
+            'attendance_percentage': row['attendance_percentage'],
+            'avgMarks': row['avgMarks'],
+            'sem1_att': row['sem1_att'],
+            'sem2_att': row['sem2_att'],
+            'sem3_att': row['sem3_att'],
+            'sem4_att': row['sem4_att'],
+            'sem5_att': row['sem5_att'],
+            'sem6_att': row['sem6_att'],
+            'sem1_cgpa': row['sem1_cgpa'],
+            'sem2_cgpa': row['sem2_cgpa'],
+            'sem3_cgpa': row['sem3_cgpa'],
+            'sem4_cgpa': row['sem4_cgpa'],
+            'sem5_cgpa': row['sem5_cgpa'],
+            'sem6_cgpa': row['sem6_cgpa'],
+            'credits': row['credits'],
+            'wellbeing': row['wellbeing']
+        }
+        students_data.append(student)
+        
+        # Test scores data
+        subjects = parse_subjects_json(row['subjects_json'])
+        for test_num, subject_entry in enumerate(subjects, start=1):
+            test_scores_data.append({
+                'student_id': row['student_id'],
+                'subject': subject_entry['subject'],
+                'test_number': test_num,
+                'test_score': subject_entry['score']
+            })
+    
+    students_df = pd.DataFrame(students_data)
+    test_scores_df = pd.DataFrame(test_scores_data)
+    return students_df, test_scores_df
 
-    if not csv_files:
-        print("❌ No CSV file found in the directory. Please upload a valid file.")
-        return
-
-    # Pick the first valid CSV
-    combined_df = None
-    for file in csv_files:
-        print(f"🔍 Checking file: {file}")
-        combined_df = validate_csv(file)
-        if combined_df is not None:
-            chosen_file = file
-            break
-
-    if combined_df is None:
-        print("❌ No valid CSV file found. Please upload a correct file.")
-        return
-
-    conn = sqlite3.connect('students.db')
+def create_database(db_name: str) -> sqlite3.Connection:
+    """Create SQLite database and tables."""
+    conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-
-    print("Creating database tables...")
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS students (
+    
+    # Drop existing tables to ensure correct schema
+    cursor.execute("DROP TABLE IF EXISTS test_scores")
+    cursor.execute("DROP TABLE IF EXISTS students")
+    
+    # Create students table
+    cursor.execute("""
+        CREATE TABLE students (
             student_id TEXT PRIMARY KEY,
-            attendance_percentage REAL,
-            fee_status TEXT
+            name TEXT,
+            prn TEXT UNIQUE,
+            fee_status TEXT,
+            attendance_percentage INTEGER,
+            avgMarks REAL,
+            sem1_att INTEGER,
+            sem2_att INTEGER,
+            sem3_att INTEGER,
+            sem4_att INTEGER,
+            sem5_att INTEGER,
+            sem6_att INTEGER,
+            sem1_cgpa REAL,
+            sem2_cgpa REAL,
+            sem3_cgpa REAL,
+            sem4_cgpa REAL,
+            sem5_cgpa REAL,
+            sem6_cgpa REAL,
+            credits INTEGER,
+            wellbeing INTEGER
         )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS test_scores (
-            test_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    """)
+    
+    # Create test_scores table
+    cursor.execute("""
+        CREATE TABLE test_scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_id TEXT,
             subject TEXT,
-            test_score REAL,
             test_number INTEGER,
-            FOREIGN KEY (student_id) REFERENCES students(student_id)
+            test_score INTEGER,
+            FOREIGN KEY (student_id) REFERENCES students (student_id)
         )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            password TEXT,
-            role TEXT
-        )
-    ''')
-
-    print("Populating 'students' table...")
-    students_to_add = combined_df[['student_id', 'attendance_percentage', 'fee_status']].drop_duplicates()
-    students_to_add.to_sql('students', conn, if_exists='replace', index=False)
-
-    print("Populating 'test_scores' table...")
-    test_scores_to_add = combined_df[['student_id', 'subject', 'test_score', 'test_number']]
-    test_scores_to_add.to_sql('test_scores', conn, if_exists='replace', index=False)
-
-    print("Adding default 'admin' user for authentication...")
-    admin_password_hash = generate_password_hash("admin")
-    cursor.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)", 
-                   ('admin', admin_password_hash, 'admin'))
-
+    """)
+    
     conn.commit()
-    conn.close()
-    print(f"✅ Database 'students.db' created and populated successfully using file: {chosen_file}")
+    return conn
 
+def insert_data(conn: sqlite3.Connection, students_df: pd.DataFrame, test_scores_df: pd.DataFrame):
+    """Insert data into the database."""
+    cursor = conn.cursor()
+    
+    # Insert into students table
+    for _, row in students_df.iterrows():
+        try:
+            cursor.execute("""
+                INSERT OR REPLACE INTO students (
+                    student_id, name, prn, fee_status, attendance_percentage,
+                    avgMarks, sem1_att, sem2_att, sem3_att, sem4_att, sem5_att,
+                    sem6_att, sem1_cgpa, sem2_cgpa, sem3_cgpa, sem4_cgpa,
+                    sem5_cgpa, sem6_cgpa, credits, wellbeing
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                row['student_id'], row['name'], row['prn'], row['fee_status'],
+                row['attendance_percentage'], row['avgMarks'], row['sem1_att'],
+                row['sem2_att'], row['sem3_att'], row['sem4_att'], row['sem5_att'],
+                row['sem6_att'], row['sem1_cgpa'], row['sem2_cgpa'], row['sem3_cgpa'],
+                row['sem4_cgpa'], row['sem5_cgpa'], row['sem6_cgpa'], row['credits'],
+                row['wellbeing']
+            ))
+        except sqlite3.Error as e:
+            print(f"Error inserting student {row['student_id']}: {e}")
+    
+    # Insert into test_scores table
+    for _, row in test_scores_df.iterrows():
+        try:
+            cursor.execute("""
+                INSERT INTO test_scores (student_id, subject, test_number, test_score)
+                VALUES (?, ?, ?, ?)
+            """, (
+                row['student_id'], row['subject'], row['test_number'], row['test_score']
+            ))
+        except sqlite3.Error as e:
+            print(f"Error inserting test score for {row['student_id']}: {e}")
+    
+    conn.commit()
 
-if __name__ == '__main__':
-    setup_database()
+def main():
+    csv_file = 'students_data.csv'
+    db_name = 'students.db'
+    
+    try:
+        # Load and validate CSV
+        df = load_and_validate_csv(csv_file)
+        print(f"--- Inspecting '{csv_file}' ---")
+        print("Headers found:", list(df.columns))
+        print("\nFirst 5 rows (sample):")
+        print(df.head().to_string())
+        
+        # Transform data
+        students_df, test_scores_df = transform_data(df)
+        
+        # Create database and tables
+        conn = create_database(db_name)
+        
+        # Insert data
+        insert_data(conn, students_df, test_scores_df)
+        
+        print(f"\nSuccessfully loaded data into {db_name}")
+        print(f"Students table: {len(students_df)} records")
+        print(f"Test scores table: {len(test_scores_df)} records")
+        
+        # Verify mappings
+        required_schema = ['student_id', 'name', 'prn', 'fee_status', 'attendance_percentage', 
+                         'subject', 'test_number', 'test_score']
+        combined_columns = list(students_df.columns) + ['subject', 'test_number', 'test_score']
+        missing = [col for col in required_schema if col not in combined_columns]
+        if missing:
+            print(f"❌ Missing after mapping: {missing}")
+        else:
+            print("✅ All required columns mapped successfully")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    
+    finally:
+        if 'conn' in locals():
+            conn.close()
+
+if __name__ == "__main__":
+    main()

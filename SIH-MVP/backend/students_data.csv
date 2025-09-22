@@ -1,166 +1,31 @@
-student_id,attendance_percentage,fee_status,subject,test_score,test_number
-S501,87,Overdue,DSA,91,1
-S501,87,Overdue,OS,94,1
-S501,87,Overdue,DBMS,93,1
-S501,87,Overdue,ComputerNetwork,95,1
-S501,87,Overdue,ObjectOrientedProgramming,89,1
-S502,73,Overdue,DSA,85,1
-S502,73,Overdue,OS,88,1
-S502,73,Overdue,DBMS,89,1
-S502,73,Overdue,ComputerNetwork,89,1
-S502,73,Overdue,ObjectOrientedProgramming,87,1
-S503,68,Paid,DSA,94,1
-S503,68,Paid,OS,95,1
-S503,68,Paid,DBMS,90,1
-S503,68,Paid,ComputerNetwork,87,1
-S503,68,Paid,ObjectOrientedProgramming,91,1
-S504,46,Overdue,DSA,93,1
-S504,46,Overdue,OS,94,1
-S504,46,Overdue,DBMS,89,1
-S504,46,Overdue,ComputerNetwork,88,1
-S504,46,Overdue,ObjectOrientedProgramming,86,1
-S505,88,Overdue,DSA,85,1
-S505,88,Overdue,OS,95,1
-S505,88,Overdue,DBMS,90,1
-S505,88,Overdue,ComputerNetwork,88,1
-S505,88,Overdue,ObjectOrientedProgramming,85,1
-S506,73,Paid,DSA,49,1
-S506,73,Paid,OS,55,1
-S506,73,Paid,DBMS,41,1
-S506,73,Paid,ComputerNetwork,45,1
-S506,73,Paid,ObjectOrientedProgramming,48,1
-S507,56,Paid,DSA,54,1
-S507,56,Paid,OS,46,1
-S507,56,Paid,DBMS,50,1
-S507,56,Paid,ComputerNetwork,49,1
-S507,56,Paid,ObjectOrientedProgramming,55,1
-S508,44,Overdue,DSA,40,1
-S508,44,Overdue,OS,45,1
-S508,44,Overdue,DBMS,50,1
-S508,44,Overdue,ComputerNetwork,52,1
-S508,44,Overdue,ObjectOrientedProgramming,42,1
-S509,90,Overdue,DSA,53,1
-S509,90,Overdue,OS,52,1
-S509,90,Overdue,DBMS,51,1
-S509,90,Overdue,ComputerNetwork,51,1
-S509,90,Overdue,ObjectOrientedProgramming,54,1
-S510,78,Overdue,DSA,55,1
-S510,78,Overdue,OS,45,1
-S510,78,Overdue,DBMS,48,1
-S510,78,Overdue,ComputerNetwork,47,1
-S510,78,Overdue,ObjectOrientedProgramming,41,1
-S511,63,Paid,DSA,71,1
-S511,63,Paid,OS,74,1
-S511,63,Paid,DBMS,72,1
-S511,63,Paid,ComputerNetwork,69,1
-S511,63,Paid,ObjectOrientedProgramming,68,1
-S512,41,Paid,DSA,67,1
-S512,41,Paid,OS,74,1
-S512,41,Paid,DBMS,61,1
-S512,41,Paid,ComputerNetwork,75,1
-S512,41,Paid,ObjectOrientedProgramming,62,1
-S513,91,Overdue,DSA,68,1
-S513,91,Overdue,OS,61,1
-S513,91,Overdue,DBMS,73,1
-S513,91,Overdue,ComputerNetwork,75,1
-S513,91,Overdue,ObjectOrientedProgramming,67,1
-S514,71,Paid,DSA,62,1
-S514,71,Paid,OS,72,1
-S514,71,Paid,DBMS,66,1
-S514,71,Paid,ComputerNetwork,73,1
-S514,71,Paid,ObjectOrientedProgramming,73,1
-S515,67,Overdue,DSA,72,1
-S515,67,Overdue,OS,69,1
-S515,67,Overdue,DBMS,61,1
-S515,67,Overdue,ComputerNetwork,68,1
-S515,67,Overdue,ObjectOrientedProgramming,67,1
-S516,45,Paid,DSA,87,1
-S516,45,Paid,OS,68,1
-S516,45,Paid,DBMS,45,1
-S516,45,Paid,ComputerNetwork,79,1
-S516,45,Paid,ObjectOrientedProgramming,83,1
-S517,94,Paid,DSA,83,1
-S517,94,Paid,OS,57,1
-S517,94,Paid,DBMS,53,1
-S517,94,Paid,ComputerNetwork,70,1
-S517,94,Paid,ObjectOrientedProgramming,76,1
-S518,75,Overdue,DSA,85,1
-S518,75,Overdue,OS,65,1
-S518,75,Overdue,DBMS,51,1
-S518,75,Overdue,ComputerNetwork,81,1
-S518,75,Overdue,ObjectOrientedProgramming,62,1
-S519,61,Overdue,DSA,85,1
-S519,61,Overdue,OS,60,1
-S519,61,Overdue,DBMS,58,1
-S519,61,Overdue,ComputerNetwork,78,1
-S519,61,Overdue,ObjectOrientedProgramming,73,1
-S520,51,Overdue,DSA,89,1
-S520,51,Overdue,OS,67,1
-S520,51,Overdue,DBMS,42,1
-S520,51,Overdue,ComputerNetwork,70,1
-S520,51,Overdue,ObjectOrientedProgramming,85,1
-S521,86,Paid,DSA,42,1
-S521,86,Paid,OS,37,1
-S521,86,Paid,DBMS,41,1
-S521,86,Paid,ComputerNetwork,31,1
-S521,86,Paid,ObjectOrientedProgramming,35,1
-S522,79,Paid,DSA,41,1
-S522,79,Paid,OS,39,1
-S522,79,Paid,DBMS,35,1
-S522,79,Paid,ComputerNetwork,43,1
-S522,79,Paid,ObjectOrientedProgramming,31,1
-S523,62,Paid,DSA,37,1
-S523,62,Paid,OS,40,1
-S523,62,Paid,DBMS,30,1
-S523,62,Paid,ComputerNetwork,44,1
-S523,62,Paid,ObjectOrientedProgramming,32,1
-S524,42,Paid,DSA,45,1
-S524,42,Paid,OS,42,1
-S524,42,Paid,DBMS,40,1
-S524,42,Paid,ComputerNetwork,30,1
-S524,42,Paid,ObjectOrientedProgramming,40,1
-S525,90,Overdue,DSA,42,1
-S525,90,Overdue,OS,31,1
-S525,90,Overdue,DBMS,41,1
-S525,90,Overdue,ComputerNetwork,44,1
-S525,90,Overdue,ObjectOrientedProgramming,32,1
-S526,84,Overdue,DSA,94,1
-S526,84,Overdue,OS,91,1
-S526,84,Overdue,DBMS,93,1
-S526,84,Overdue,ComputerNetwork,91,1
-S526,84,Overdue,ObjectOrientedProgramming,94,1
-S527,66,Paid,DSA,90,1
-S527,66,Paid,OS,94,1
-S527,66,Paid,DBMS,92,1
-S527,66,Paid,ComputerNetwork,91,1
-S527,66,Paid,ObjectOrientedProgramming,93,1
-S528,47,Overdue,DSA,92,1
-S528,47,Overdue,OS,95,1
-S528,47,Overdue,DBMS,95,1
-S528,47,Overdue,ComputerNetwork,95,1
-S528,47,Overdue,ObjectOrientedProgramming,93,1
-S529,95,Paid,DSA,91,1
-S529,95,Paid,OS,91,1
-S529,95,Paid,DBMS,94,1
-S529,95,Paid,ComputerNetwork,95,1
-S529,95,Paid,ObjectOrientedProgramming,90,1
-S530,84,Overdue,DSA,93,1
-S530,84,Overdue,OS,95,1
-S530,84,Overdue,DBMS,92,1
-S530,84,Overdue,ComputerNetwork,93,1
-S530,84,Overdue,ObjectOrientedProgramming,90,1
-<div className="p-6 bg-white rounded-2xl shadow-lg">
-    <p className="text-xl font-bold text-gray-900 mb-4">Subject Scores</p>
-    {studentData.subjects && studentData.subjects.length > 0 ? (
-        <ul className="space-y-2">
-            {studentData.subjects.map((subj, idx) => (
-                <li key={idx} className="flex justify-between border-b pb-2">
-                    <span className="font-semibold text-gray-700">{subj.subject}</span>
-                    <span className="font-bold text-sky-600">{subj.score}</span>
-                </li>
-            ))}
-        </ul>
-    ) : (
-        <p className="text-gray-500">No subject scores available.</p>
-    )}
-</div>
+student_id,name,prn,fee_status,attendance_percentage,avgMarks,sem1_att,sem2_att,sem3_att,sem4_att,sem5_att,sem6_att,sem1_cgpa,sem2_cgpa,sem3_cgpa,sem4_cgpa,sem5_cgpa,sem6_cgpa,credits,wellbeing,subjects_json
+S501,Student S501,PRN501,Overdue,87,92.4,86,82,90,83,89,87,9.03,8.87,9.2,8.69,8.93,9.24,20,76,"[{""subject"": ""DSA"", ""score"": 91}, {""subject"": ""OS"", ""score"": 94}, {""subject"": ""DBMS"", ""score"": 93}, {""subject"": ""ComputerNetwork"", ""score"": 95}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 89}]"
+S502,Student S502,PRN502,Overdue,73,87.6,74,71,77,69,78,73,8.02,8.21,8.4,7.98,8.12,8.76,22,70,"[{""subject"": ""DSA"", ""score"": 85}, {""subject"": ""OS"", ""score"": 88}, {""subject"": ""DBMS"", ""score"": 89}, {""subject"": ""ComputerNetwork"", ""score"": 89}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 87}]"
+S503,Student S503,PRN503,Paid,68,91.4,66,72,63,71,70,68,9.07,8.64,8.28,8.93,8.98,9.14,18,75,"[{""subject"": ""DSA"", ""score"": 94}, {""subject"": ""OS"", ""score"": 95}, {""subject"": ""DBMS"", ""score"": 90}, {""subject"": ""ComputerNetwork"", ""score"": 87}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 91}]"
+S504,Student S504,PRN504,Overdue,46,90.0,47,44,51,50,44,46,8.66,8.34,8.12,8.28,8.40,9.0,20,61,"[{""subject"": ""DSA"", ""score"": 93}, {""subject"": ""OS"", ""score"": 94}, {""subject"": ""DBMS"", ""score"": 89}, {""subject"": ""ComputerNetwork"", ""score"": 88}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 86}]"
+S505,Student S505,PRN505,Overdue,88,88.6,84,91,86,91,89,88,8.55,9.18,8.54,8.69,8.83,8.86,24,77,"[{""subject"": ""DSA"", ""score"": 85}, {""subject"": ""OS"", ""score"": 95}, {""subject"": ""DBMS"", ""score"": 90}, {""subject"": ""ComputerNetwork"", ""score"": 88}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 85}]"
+S506,Student S506,PRN506,Paid,73,47.6,75,66,70,67,72,73,5.98,5.34,6.23,5.61,5.78,4.76,18,53,"[{""subject"": ""DSA"", ""score"": 49}, {""subject"": ""OS"", ""score"": 55}, {""subject"": ""DBMS"", ""score"": 41}, {""subject"": ""ComputerNetwork"", ""score"": 45}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 48}]"
+S507,Student S507,PRN507,Paid,56,50.8,61,52,57,51,62,56,6.09,5.81,5.9,5.63,6.2,5.08,20,50,"[{""subject"": ""DSA"", ""score"": 54}, {""subject"": ""OS"", ""score"": 46}, {""subject"": ""DBMS"", ""score"": 50}, {""subject"": ""ComputerNetwork"", ""score"": 49}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 55}]"
+S508,Student S508,PRN508,Overdue,44,45.8,45,40,48,49,41,44,4.96,4.76,4.87,4.99,4.6,4.58,18,39,"[{""subject"": ""DSA"", ""score"": 40}, {""subject"": ""OS"", ""score"": 45}, {""subject"": ""DBMS"", ""score"": 50}, {""subject"": ""ComputerNetwork"", ""score"": 52}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 42}]"
+S509,Student S509,PRN509,Overdue,90,52.2,90,86,92,88,95,90,5.33,5.12,5.5,5.0,5.48,5.22,22,53,"[{""subject"": ""DSA"", ""score"": 53}, {""subject"": ""OS"", ""score"": 52}, {""subject"": ""DBMS"", ""score"": 51}, {""subject"": ""ComputerNetwork"", ""score"": 51}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 54}]"
+S510,Student S510,PRN510,Overdue,78,47.2,78,74,72,80,77,78,5.1,4.82,4.8,4.82,5.01,4.72,20,53,"[{""subject"": ""DSA"", ""score"": 55}, {""subject"": ""OS"", ""score"": 45}, {""subject"": ""DBMS"", ""score"": 48}, {""subject"": ""ComputerNetwork"", ""score"": 47}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 41}]"
+S511,Student S511,PRN511,Paid,63,70.8,62,67,64,70,63,63,7.1,7.23,7.01,6.95,7.29,7.08,18,67,"[{""subject"": ""DSA"", ""score"": 71}, {""subject"": ""OS"", ""score"": 74}, {""subject"": ""DBMS"", ""score"": 72}, {""subject"": ""ComputerNetwork"", ""score"": 69}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 68}]"
+S512,Student S512,PRN512,Paid,41,67.8,37,45,42,44,49,41,7.05,7.37,6.23,6.78,7.12,6.78,20,56,"[{""subject"": ""DSA"", ""score"": 67}, {""subject"": ""OS"", ""score"": 74}, {""subject"": ""DBMS"", ""score"": 61}, {""subject"": ""ComputerNetwork"", ""score"": 75}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 62}]"
+S513,Student S513,PRN513,Overdue,91,68.8,86,90,85,93,91,91,6.8,6.14,6.92,6.78,7.19,6.88,24,66,"[{""subject"": ""DSA"", ""score"": 68}, {""subject"": ""OS"", ""score"": 61}, {""subject"": ""DBMS"", ""score"": 73}, {""subject"": ""ComputerNetwork"", ""score"": 75}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 67}]"
+S514,Student S514,PRN514,Paid,71,69.2,67,73,70,70,71,71,6.2,6.28,6.81,6.72,6.98,6.92,22,66,"[{""subject"": ""DSA"", ""score"": 62}, {""subject"": ""OS"", ""score"": 72}, {""subject"": ""DBMS"", ""score"": 66}, {""subject"": ""ComputerNetwork"", ""score"": 73}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 73}]"
+S515,Student S515,PRN515,Overdue,67,67.4,62,70,64,69,66,67,6.74,6.2,6.07,6.29,6.48,6.74,18,64,"[{""subject"": ""DSA"", ""score"": 72}, {""subject"": ""OS"", ""score"": 69}, {""subject"": ""DBMS"", ""score"": 61}, {""subject"": ""ComputerNetwork"", ""score"": 68}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 67}]"
+S516,Student S516,PRN516,Paid,45,72.4,47,48,53,46,44,45,7.71,6.8,4.74,7.8,7.68,7.24,20,61,"[{""subject"": ""DSA"", ""score"": 87}, {""subject"": ""OS"", ""score"": 68}, {""subject"": ""DBMS"", ""score"": 45}, {""subject"": ""ComputerNetwork"", ""score"": 79}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 83}]"
+S517,Student S517,PRN517,Paid,94,67.8,92,91,94,90,93,94,8.31,5.53,5.44,7.01,7.69,6.78,22,77,"[{""subject"": ""DSA"", ""score"": 83}, {""subject"": ""OS"", ""score"": 57}, {""subject"": ""DBMS"", ""score"": 53}, {""subject"": ""ComputerNetwork"", ""score"": 70}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 76}]"
+S518,Student S518,PRN518,Overdue,75,68.8,79,74,77,72,76,75,8.0,6.45,5.82,7.66,6.91,6.88,18,69,"[{""subject"": ""DSA"", ""score"": 85}, {""subject"": ""OS"", ""score"": 65}, {""subject"": ""DBMS"", ""score"": 51}, {""subject"": ""ComputerNetwork"", ""score"": 81}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 62}]"
+S519,Student S519,PRN519,Overdue,61,73.0,60,66,59,63,64,61,7.78,6.38,6.14,7.78,7.23,7.3,20,70,"[{""subject"": ""DSA"", ""score"": 85}, {""subject"": ""OS"", ""score"": 60}, {""subject"": ""DBMS"", ""score"": 58}, {""subject"": ""ComputerNetwork"", ""score"": 78}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 73}]"
+S520,Student S520,PRN520,Overdue,51,70.6,50,58,48,55,52,51,7.98,6.48,4.86,6.76,6.61,7.06,22,62,"[{""subject"": ""DSA"", ""score"": 89}, {""subject"": ""OS"", ""score"": 67}, {""subject"": ""DBMS"", ""score"": 42}, {""subject"": ""ComputerNetwork"", ""score"": 70}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 85}]"
+S521,Student S521,PRN521,Paid,86,37.2,82,85,80,88,86,86,4.35,3.67,4.12,3.98,4.01,3.72,20,37,"[{""subject"": ""DSA"", ""score"": 42}, {""subject"": ""OS"", ""score"": 37}, {""subject"": ""DBMS"", ""score"": 41}, {""subject"": ""ComputerNetwork"", ""score"": 31}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 35}]"
+S522,Student S522,PRN522,Paid,79,37.8,75,71,82,78,77,79,4.1,4.03,3.5,4.24,3.82,3.78,20,38,"[{""subject"": ""DSA"", ""score"": 41}, {""subject"": ""OS"", ""score"": 39}, {""subject"": ""DBMS"", ""score"": 35}, {""subject"": ""ComputerNetwork"", ""score"": 43}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 31}]"
+S523,Student S523,PRN523,Paid,62,36.6,60,66,58,63,62,62,3.7,4.0,3.44,4.05,3.58,3.66,18,36,"[{""subject"": ""DSA"", ""score"": 37}, {""subject"": ""OS"", ""score"": 40}, {""subject"": ""DBMS"", ""score"": 30}, {""subject"": ""ComputerNetwork"", ""score"": 44}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 32}]"
+S524,Student S524,PRN524,Paid,42,37.4,40,46,39,41,44,42,4.5,4.28,3.98,4.12,4.22,3.74,18,39,"[{""subject"": ""DSA"", ""score"": 45}, {""subject"": ""OS"", ""score"": 42}, {""subject"": ""DBMS"", ""score"": 40}, {""subject"": ""ComputerNetwork"", ""score"": 30}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 40}]"
+S525,Student S525,PRN525,Overdue,90,34.0,90,86,92,88,93,90,4.2,3.1,4.13,4.44,3.52,3.4,24,36,"[{""subject"": ""DSA"", ""score"": 42}, {""subject"": ""OS"", ""score"": 31}, {""subject"": ""DBMS"", ""score"": 41}, {""subject"": ""ComputerNetwork"", ""score"": 44}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 32}]"
+S526,Student S526,PRN526,Overdue,84,92.6,81,84,86,84,83,84,9.06,9.05,9.09,9.3,8.82,9.26,20,79,"[{""subject"": ""DSA"", ""score"": 94}, {""subject"": ""OS"", ""score"": 91}, {""subject"": ""DBMS"", ""score"": 93}, {""subject"": ""ComputerNetwork"", ""score"": 91}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 94}]"
+S527,Student S527,PRN527,Paid,66,92.0,60,64,69,73,70,66,9.03,9.4,9.18,9.06,9.3,9.2,22,86,"[{""subject"": ""DSA"", ""score"": 90}, {""subject"": ""OS"", ""score"": 94}, {""subject"": ""DBMS"", ""score"": 92}, {""subject"": ""ComputerNetwork"", ""score"": 91}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 93}]"
+S528,Student S528,PRN528,Overdue,47,94.0,49,45,46,48,44,47,9.24,9.25,9.15,9.18,9.07,9.4,20,73,"[{""subject"": ""DSA"", ""score"": 92}, {""subject"": ""OS"", ""score"": 95}, {""subject"": ""DBMS"", ""score"": 95}, {""subject"": ""ComputerNetwork"", ""score"": 95}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 93}]"
+S529,Student S529,PRN529,Paid,95,92.2,95,91,94,92,93,95,9.1,9.13,9.0,9.17,9.04,9.22,24,86,"[{""subject"": ""DSA"", ""score"": 91}, {""subject"": ""OS"", ""score"": 91}, {""subject"": ""DBMS"", ""score"": 94}, {""subject"": ""ComputerNetwork"", ""score"": 95}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 90}]"
+S530,Student S530,PRN530,Overdue,84,92.6,83,80,86,87,85,84,9.1,9.02,9.01,9.32,8.82,9.26,20,83,"[{""subject"": ""DSA"", ""score"": 93}, {""subject"": ""OS"", ""score"": 95}, {""subject"": ""DBMS"", ""score"": 92}, {""subject"": ""ComputerNetwork"", ""score"": 93}, {""subject"": ""ObjectOrientedProgramming"", ""score"": 90}]"
