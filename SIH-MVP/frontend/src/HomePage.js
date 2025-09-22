@@ -1,7 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
+import Footer from './Footer';
+import { AuthContext } from './AuthContext';
 
-// FadeUpCard component for feature cards
 function FadeUpCard({ visible, delay, children }) {
     return (
         <div
@@ -18,7 +20,9 @@ function FadeUpCard({ visible, delay, children }) {
 
 const HomePage = () => {
     const navigate = useNavigate();
-    // Refs and state for scroll animations
+    const { isLoggedIn, username, logout } = useContext(AuthContext);
+    
+    // ... (rest of your HomePage state and logic) ...
     const roleRef = useRef(null);
     const featuresRef = useRef(null);
     const studentCardRef = useRef(null);
@@ -75,14 +79,16 @@ const HomePage = () => {
             navigate(`/login?role=${role}`);
         }
     };
+    // ... (rest of the handle functions) ...
 
     return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-gray-900 animate-fadein">
+        <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-gray-900 animate-fadein">
+            <Navbar isLoggedIn={isLoggedIn} username={username} logout={logout} />
             {/* Hero Section */}
             <header className="flex flex-col items-center justify-center text-center py-20 md:py-32 px-4 bg-gradient-to-br from-sky-100/90 via-white/90 to-emerald-100/80 shadow-2xl relative overflow-hidden">
                 <div className="absolute inset-0 pointer-events-none z-0">
                     <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-sky-400/30 via-emerald-400/20 to-white/10 rounded-full blur-3xl animate-blob1"></div>
-                        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-br from-emerald-300/30 via-sky-400/20 to-white/10 rounded-full blur-3xl animate-blob2"></div>
+                    <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-br from-emerald-300/30 via-sky-400/20 to-white/10 rounded-full blur-3xl animate-blob2"></div>
                 </div>
                 <img src="/logoeklavyafinal.png" alt="Project Eklavya Logo" style={{ height: 340, width: 'auto', marginBottom: 10 }} className="z-10 transition-transform duration-500 hover:scale-105" />
                 <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-sky-400 drop-shadow-lg z-10 animate-slidein pb-2">Project Eklavya</h1>
@@ -172,38 +178,10 @@ const HomePage = () => {
                         <p className="text-gray-700">Comprehensive analytics and reporting tools provide actionable insights for educational stakeholders.</p>
                     </FadeUpCard>
                 </div>
-
             </section>
-            {/* Animations (Tailwind custom classes or add to your CSS) */}
-            <style>{`
-                @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-                .animate-fadein { animation: fadein 1s ease-in; }
-                @keyframes fadein2 { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: none;} }
-                .animate-fadein2 { animation: fadein2 1.2s 0.2s both; }
-                .animate-fadein3 { animation: fadein2 1.2s 0.4s both; }
-                .animate-fadein4 { animation: fadein2 1.2s 0.6s both; }
-                .animate-fadein5 { animation: fadein2 1.2s 0.8s both; }
-                @keyframes slidein { from { opacity: 0; transform: translateY(-40px);} to { opacity: 1; transform: none;} }
-                .animate-slidein { animation: slidein 1.2s 0.1s both; }
-                .animate-slidein2 { animation: slidein 1.2s 0.3s both; }
-                .animate-slidein3 { animation: slidein 1.2s 0.5s both; }
-                @keyframes bouncein { 0% { transform: scale(0.9);} 60% { transform: scale(1.05);} 100% { transform: scale(1);} }
-                .animate-bouncein { animation: bouncein 0.8s 0.6s both; }
-                .animate-bouncein2 { animation: bouncein 0.8s 0.8s both; }
-                @keyframes blob1 { 0%, 100% { transform: scale(1) translateY(0);} 50% { transform: scale(1.1) translateY(20px);} }
-                .animate-blob1 { animation: blob1 12s infinite ease-in-out; }
-                @keyframes blob2 { 0%, 100% { transform: scale(1) translateY(0);} 50% { transform: scale(1.08) translateY(-20px);} }
-                .animate-blob2 { animation: blob2 14s infinite ease-in-out; }
-                .animate-card1 { animation: fadein2 1.2s 1.0s both; }
-                .animate-card2 { animation: fadein2 1.2s 1.2s both; }
-                .animate-card3 { animation: fadein2 1.2s 1.4s both; }
-                .animate-card4 { animation: fadein2 1.2s 1.6s both; }
-                .animate-card5 { animation: fadein2 1.2s 1.8s both; }
-                @keyframes fadeup { from { opacity: 0; transform: translateY(48px);} to { opacity: 1; transform: none;} }
-                .animate-fadeup { animation: fadeup 0.9s cubic-bezier(0.23, 1, 0.32, 1) both; }
-            `}</style>
+            <Footer />
         </div>
     );
-}
+};
 
 export default HomePage;
