@@ -67,15 +67,102 @@ function DashboardPage() {
     };
 
     const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditableStudent(prev => ({ ...prev, [name]: value }));
-    };
+    const { name, value } = e.target;
+    setEditableStudent(prev => ({ ...prev, [name]: value }));
+};
 
-    const handleUpdate = async () => { /* ... unchanged logic ... */ };
-    const handleDelete = async () => { /* ... unchanged logic ... */ };
-    const handleExport = () => { /* ... unchanged logic ... */ };
-    const handleFileUpload = async (e) => { /* ... unchanged logic ... */ };
+const handleUpdate = async () => {
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/student/update", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ student_id: editableStudent.student_id, updates: {
+                attendance_percentage: editableStudent.attendance_percentage,
+                fee_status: editableStudent.fee_status
+            }})
+        });
+        const data = await response.json();
+        alert(data.message);
+        if (response.ok) {
+            setRefresh(prev => !prev);
+            setEditMode(false);
+            setSelected(null);
+        }
+    } catch (error) {
+        alert("An error occurred while updating.");
+    }
+};
 
+const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this student?")) {
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/api/student/delete/${selected.info.student_id}`, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+            alert(data.message);
+            if (response.ok) {
+                setRefresh(prev => !prev);
+                setSelected(null);
+            }
+        } catch (error) {
+            alert("An error occurred while deleting.");
+        }
+    }
+};
+
+const handleExport = () => {
+    const data = selected.info;
+    const csvContent = 
+        "Key,Value\n" +
+        `Student ID,${data.student_id}\n` +
+        `Attendance,${data.attendance_percentage}\n` +
+        `Avg Score,${data.avg_test_score}\n` +
+        `Fee Status,${data.fee_status}\n` +
+        `Risk Level,${data.risk_level}\n` +
+        `\nReasons for Risk\n` +
+        data.reasons.map(r => `,"${r}"`).join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    if (link.download !== undefined) { 
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `student_${data.student_id}_report.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+};
+
+const handleFileUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById("file-upload");
+    if (!fileInput.files.length) {
+        alert("Please select a file first!");
+        return;
+    }
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    try {
+        const res = await fetch("http://127.0.0.1:5000/api/upload", {
+            method: "POST",
+            body: formData,
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert("✅ File uploaded and processed successfully!");
+            setRefresh(prev => !prev);
+        } else {
+            alert("❌ " + data.message);
+        }
+    } catch (error) {
+        console.error(error);
+        alert("❌ Error uploading file.");
+    }
+};
 
     // Data processing for summary counts
     const highRiskCount = students.filter((s) => s.risk_level === "High").length;
