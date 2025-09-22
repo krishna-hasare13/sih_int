@@ -6,6 +6,7 @@ import StudentDashboard from "./StudentDashboard";
 import StudentLoginPage from "./StudentLoginPage";
 import { AuthContext, AuthProvider } from './AuthContext';
 import RiskPieChart from "./RiskPieChart";
+import AboutUs from './AboutUs';
 import SubjectScoresChart from "./SubjectScoresChart";
 import RiskTrendChart from "./RiskTrendChart";
 import UserManagement from "./UserManagement";
@@ -398,6 +399,7 @@ function AppRoutes() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/student-login" element={<StudentLoginPage />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/dashboard" element={
                 isLoggedIn && (userRole === 'mentor' || userRole === 'admin') 
                 ? <DashboardPage /> 

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { AuthContext } from './AuthContext';
@@ -21,16 +21,25 @@ function FadeUpCard({ visible, delay, children }) {
 const HomePage = () => {
     const navigate = useNavigate();
     const { isLoggedIn, username, logout } = useContext(AuthContext);
-    
-    // ... (rest of your HomePage state and logic) ...
+    const location = useLocation();
+
+    // Create a ref for the login section
+    const loginSectionRef = useRef(null);
     const roleRef = useRef(null);
     const featuresRef = useRef(null);
     const studentCardRef = useRef(null);
-    const mentorCardRef = useRef(null);
+    const AdminCardRef = useRef(null);
     const [roleVisible, setRoleVisible] = useState(false);
     const [featuresVisible, setFeaturesVisible] = useState(false);
     const [studentCardVisible, setStudentCardVisible] = useState(false);
-    const [mentorCardVisible, setMentorCardVisible] = useState(false);
+    const [AdminCardVisible, setAdminCardVisible] = useState(false);
+
+    // Scroll to the login section when the component loads if a flag is set in the state
+    useEffect(() => {
+        if (location.state?.scrollToLogin) {
+            loginSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [location.state?.scrollToLogin]);
 
     useEffect(() => {
         const ref = roleRef.current;
@@ -63,9 +72,9 @@ const HomePage = () => {
     }, []);
 
     useEffect(() => {
-        const ref = mentorCardRef.current;
+        const ref = AdminCardRef.current;
         const observer = new window.IntersectionObserver(
-            ([entry]) => setMentorCardVisible(entry.isIntersecting),
+            ([entry]) => setAdminCardVisible(entry.isIntersecting),
             { threshold: 0.2 }
         );
         if (ref) observer.observe(ref);
@@ -79,8 +88,7 @@ const HomePage = () => {
             navigate(`/login?role=${role}`);
         }
     };
-    // ... (rest of the handle functions) ...
-
+    
     return (
         <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-gray-900 animate-fadein">
             <Navbar isLoggedIn={isLoggedIn} username={username} logout={logout} />
@@ -97,13 +105,13 @@ const HomePage = () => {
                 <h2 className="text-3xl md:text-4xl font-bold mt-12 text-gray-800 z-10 animate-fadein4 pb-2">Helping Students Stay on Track</h2>
                 <p className="text-lg md:text-xl max-w-3xl mt-4 text-gray-700 z-10 animate-fadein5">
                     AI-powered educational dashboard system for dropout prevention and student
-                    counseling management. Empowering students, mentors, and guardians with
+                    counseling management. Empowering students, Admins, and guardians with
                     data-driven insights for academic success.
                 </p>
             </header>
 
             {/* Login Portals Section */}
-            <section className="py-20 px-4 text-center">
+            <section id="login-portals-section" ref={loginSectionRef} className="py-20 px-4 text-center">
                 <h2
                     ref={roleRef}
                     className={
@@ -133,21 +141,21 @@ const HomePage = () => {
                         </button>
                     </div>
                     <div
-                        ref={mentorCardRef}
+                        ref={AdminCardRef}
                         className={
                             `flex-1 flex flex-col justify-between p-10 rounded-3xl shadow-2xl border-0 bg-gradient-to-br from-emerald-100/80 via-white/90 to-yellow-100/80 transform transition-transform duration-500 hover:scale-105 hover:shadow-3xl animate-card2 ` +
-                            (mentorCardVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
+                            (AdminCardVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
                         }
                     >
                         <div>
-                            <h3 className="text-2xl font-bold mb-4 text-sky-700">Mentor Login</h3>
+                            <h3 className="text-2xl font-bold mb-4 text-sky-700">Admin Login</h3>
                             <p className="text-gray-700">Monitor all students, identify risks, and manage interventions.</p>
                         </div>
                         <button
-                            onClick={() => handleLoginRedirect('mentor')}
+                            onClick={() => handleLoginRedirect('Admin')}
                             className="mt-8 w-full py-3 px-4 rounded-xl bg-sky-700 text-white font-bold text-lg shadow-lg hover:bg-sky-800 transition-all duration-300 animate-bouncein2"
                         >
-                            Continue as Mentor
+                            Continue as Admin
                         </button>
                     </div>
                 </div>
@@ -155,25 +163,19 @@ const HomePage = () => {
 
             {/* Features Section */}
             <section className="py-20 px-4 text-center bg-gradient-to-br from-sky-50/90 via-white/90 to-emerald-50/80">
-                <h2
-                    ref={featuresRef}
-                    className={
-                        `text-4xl md:text-5xl font-bold mb-16 text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-yellow-500 animate-slidein3 transition-all duration-700 pb-2 ` +
-                        (featuresVisible ? 'opacity-100 translate-y-0 animate-fadeup' : 'opacity-0 translate-y-12')
-                    }
-                >
+                <h2 className="text-4xl md:text-5xl font-bold mb-16 text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-yellow-500 animate-slidein3 transition-all duration-700 pb-2">
                     Key Features
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-                    <FadeUpCard visible={featuresVisible} delay={0.1}>
+                    <FadeUpCard visible={true} delay={0.1}>
                         <h3 className="text-2xl font-bold mb-4 text-sky-700">ML-Driven Risk Assessment</h3>
                         <p className="text-gray-700">Advanced machine learning algorithms analyze academic patterns to identify students at risk of dropping out before it's too late.</p>
                     </FadeUpCard>
-                    <FadeUpCard visible={featuresVisible} delay={0.3}>
+                    <FadeUpCard visible={true} delay={0.3}>
                         <h3 className="text-2xl font-bold mb-4 text-emerald-700">Early Intervention System</h3>
                         <p className="text-gray-700">Proactive alerts and automated notifications enable timely interventions through structured counseling programs.</p>
                     </FadeUpCard>
-                    <FadeUpCard visible={featuresVisible} delay={0.5}>
+                    <FadeUpCard visible={true} delay={0.5}>
                         <h3 className="text-2xl font-bold mb-4 text-yellow-600">Data-Driven Insights</h3>
                         <p className="text-gray-700">Comprehensive analytics and reporting tools provide actionable insights for educational stakeholders.</p>
                     </FadeUpCard>
