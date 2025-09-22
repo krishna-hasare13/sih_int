@@ -84,7 +84,7 @@ const HomePage = () => {
                     <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-sky-400/30 via-emerald-400/20 to-white/10 rounded-full blur-3xl animate-blob1"></div>
                         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-br from-emerald-300/30 via-sky-400/20 to-white/10 rounded-full blur-3xl animate-blob2"></div>
                 </div>
-                <img src="/logoeklavyafinal.png" alt="Project Eklavya Logo" style={{ height: 180, width: 'auto', marginBottom: 16, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)' }} className="z-10 transition-transform duration-500 hover:scale-105" />
+                <img src="/logoeklavyafinal.png" alt="Project Eklavya Logo" style={{ height: 180, width: 'auto', marginBottom: 10, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)' }} className="z-10 transition-transform duration-500 hover:scale-105" />
                 <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-sky-400 drop-shadow-lg z-10 animate-slidein pb-2">Project Eklavya</h1>
                 <p className="text-2xl mt-4 text-gray-700 font-medium z-10 animate-fadein2 pb-1">Empowering Futures • Growing Together</p>
                 <p className="text-lg mt-1 text-blue-500 font-semibold z-10 animate-fadein3">Academic Excellence Platform</p>
