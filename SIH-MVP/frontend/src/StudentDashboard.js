@@ -50,30 +50,53 @@ function StudentDashboard() {
         const fetchStudentData = async () => {
             setIsLoading(true);
             try {
-                // Fetch all students from backend API
+                // Fetch all students from backend API (or change to `/api/students/:id` if available)
                 const response = await fetch("http://127.0.0.1:5000/api/students");
+                if (!response.ok) throw new Error("Failed to fetch students");
                 const students = await response.json();
 
                 // Find student by username (assuming student_id === username)
-                const student = students.find(
-                    (s) => s.student_id === storedUsername
-                );
+                const student = Array.isArray(students)
+                    ? students.find((s) => String(s.student_id) === String(storedUsername))
+                    : students && (String(students.student_id) === String(storedUsername) ? students : null);
 
                 if (student) {
-                    // Aggregate semester data if needed, here just showing available fields
+                    // Parse numeric values safely and provide sensible defaults
+                    const safeNum = (v, d = 0) => {
+                        const n = Number(v);
+                        return Number.isFinite(n) ? n : d;
+                    };
+
+                    // Map expected backend field names to the UI fields.
+                    // Adjust the property names below to match your API/CSV keys.
                     setStudentData({
-                        name: storedUsername,
-                        sem6_att: student.attendance_percentage,
-                        avgMarks: student.test_score,
-                        credits: 0, // Set actual value if available in CSV
-                        sem6_cgpa: 0, // Set actual value if available in CSV
-                        wellbeing: 75, // Placeholder, set actual value if available
+                        name: student.name || storedUsername,
+                        prn: student.prn || student.PRN || "N/A",
+                        // Attendance per semester (expected fields: sem1_att, sem2_att, ... or att_sem1 etc.)
+                        sem1_att: safeNum(student.sem1_att, safeNum(student.att_sem1)),
+                        sem2_att: safeNum(student.sem2_att, safeNum(student.att_sem2)),
+                        sem3_att: safeNum(student.sem3_att, safeNum(student.att_sem3)),
+                        sem4_att: safeNum(student.sem4_att, safeNum(student.att_sem4)),
+                        sem5_att: safeNum(student.sem5_att, safeNum(student.att_sem5)),
+                        sem6_att: safeNum(student.sem6_att, safeNum(student.att_sem6, student.attendance_percentage)),
+                        // CGPA per semester (0..10)
+                        sem1_cgpa: safeNum(student.sem1_cgpa),
+                        sem2_cgpa: safeNum(student.sem2_cgpa),
+                        sem3_cgpa: safeNum(student.sem3_cgpa),
+                        sem4_cgpa: safeNum(student.sem4_cgpa),
+                        sem5_cgpa: safeNum(student.sem5_cgpa),
+                        sem6_cgpa: safeNum(student.sem6_cgpa),
+                        // other summary fields
+                        credits: safeNum(student.credits, 0),
+                        sem6_cgpa_overall: safeNum(student.sem6_cgpa, 0),
+                        avgMarks: safeNum(student.test_score, safeNum(student.avgMarks, 0)),
+                        wellbeing: safeNum(student.wellbeing, 75), // fallback to 75
                     });
                 } else {
                     setStudentData(null);
                 }
             } catch (err) {
-                console.error(err);
+                console.error("fetchStudentData:", err);
                 setStudentData(null);
             } finally {
                 setIsLoading(false);
@@ -229,14 +252,10 @@ function StudentDashboard() {
                         <p className="text-gray-600">PRN: 1234567890</p>
                     </div>
                     <hr className="border-t border-gray-300 mb-4"/>
-                    <div className="grid grid-cols-4 text-center">
+                    <div className="grid grid-cols-3 text-center">
                         <div>
                             <p className="text-gray-900 font-bold">{studentData.sem6_att}%</p>
                             <p className="text-gray-600 text-sm">Attendance</p>
-                        </div>
-                        <div>
-                            <p className="text-gray-900 font-bold">{studentData.test_score}</p>
-                            <p className="text-gray-600 text-sm">Test Score</p>
                         </div>
                         <div>
                             <p className="text-gray-900 font-bold">{studentData.credits}</p>
