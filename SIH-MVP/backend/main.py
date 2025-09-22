@@ -61,6 +61,14 @@ def get_data_from_db():
             conn.close()
 
 # -------------------- AI Model --------------------
+from xgboost import XGBClassifier
+import joblib
+import numpy as np
+import pandas as pd
+import os
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+# -------------------- AI Model --------------------
 def train_model_once():
     global MODEL, SCALER, ENCODER, FEATURES
 
@@ -69,15 +77,16 @@ def train_model_once():
         SCALER = joblib.load(SCALER_FILE)
         ENCODER = joblib.load(ENCODER_FILE)
         FEATURES = ['attendance_percentage', 'avg_test_score'] + ENCODER.get_feature_names_out(['fee_status']).tolist()
-        print("✅ AI model loaded successfully.")
+        print("✅ AI model loaded successfully (XGBoost).")
         return
 
-    print("⚠️ Training a new AI model...")
+    print("⚠️ Training a new AI model (XGBoost)...")
     train_df, _, _ = get_data_from_db()
 
     if train_df.empty:
         train_df = historical_df.copy()
 
+    # Create labels if missing
     if 'risk_label' not in train_df.columns:
         def get_label(row):
             if row['attendance_percentage'] < 70 and row['avg_test_score'] < 50:
@@ -88,6 +97,7 @@ def train_model_once():
                 return 'Low'
         train_df['risk_label'] = train_df.apply(get_label, axis=1)
 
+    # Encode categorical
     ENCODER = OneHotEncoder(handle_unknown='ignore')
     train_encoded = pd.DataFrame(
         ENCODER.fit_transform(train_df[['fee_status']]).toarray(),
@@ -96,22 +106,31 @@ def train_model_once():
 
     train_df_processed = pd.concat([train_df.drop('fee_status', axis=1), train_encoded], axis=1)
 
-   
-    # FEATURES = ['attendance_percentage', 'avg_test_score'] + list(train_encoded.columns)
     FEATURES = ['attendance_percentage', 'avg_test_score'] + ENCODER.get_feature_names_out(['fee_status']).tolist()
     X_train = train_df_processed[FEATURES]
     y_train = train_df_processed['risk_label']
 
+    # Scale numerical features
     SCALER = StandardScaler()
     X_train_scaled = SCALER.fit_transform(X_train)
 
-    MODEL = LogisticRegression(random_state=42, max_iter=200)
+    # 🔹 Train XGBoost Classifier
+    MODEL = XGBClassifier(
+        n_estimators=200,
+        learning_rate=0.1,
+        max_depth=5,
+        random_state=42,
+        use_label_encoder=False,
+        eval_metric="mlogloss"
+    )
     MODEL.fit(X_train_scaled, y_train)
 
+    # Save trained components
     joblib.dump(MODEL, MODEL_FILE)
     joblib.dump(SCALER, SCALER_FILE)
     joblib.dump(ENCODER, ENCODER_FILE)
-    print("✅ AI model trained and saved.")
+    print("✅ XGBoost AI model trained and saved.")
+
 
 def predict_risk(current_df):
     if MODEL is None or SCALER is None or ENCODER is None:
@@ -125,14 +144,10 @@ def predict_risk(current_df):
     current_df_processed = pd.concat([current_df.drop('fee_status', axis=1), current_encoded], axis=1)
     
     X_predict = current_df_processed[FEATURES]
-    
-    
-    
     X_predict_scaled = SCALER.transform(X_predict)
-  
-    
-    
+
     predictions = MODEL.predict_proba(X_predict_scaled)
+
     class_order = ['High', 'Medium', 'Low']
     class_map = {cls: predictions[:, np.where(MODEL.classes_ == cls)[0][0]]
                  for cls in class_order if cls in MODEL.classes_}
@@ -141,6 +156,7 @@ def predict_risk(current_df):
     current_df['risk_level'] = MODEL.predict(X_predict_scaled)
 
     return current_df, None
+
 
 def get_counseling_insights(student_data, model, features):
     reasons = []
