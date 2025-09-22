@@ -26,7 +26,7 @@ const Navbar = () => {
         <nav className="fixed top-0 left-0 w-full z-50 p-6 bg-white/80 backdrop-blur-md shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center space-x-3">
-                    <img src="/logoeklavyafinal.png" alt="Logo" className="h-10 w-10 transition-transform duration-300 hover:rotate-6" />
+                    {/* <img src="/logoeklavyafinal.png" alt="Logo" className="h-10 w-10 transition-transform duration-300 hover:rotate-6" /> */}
                     <Link to="/" className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-emerald-600 to-yellow-500">
                         Project Eklavya
                     </Link>
