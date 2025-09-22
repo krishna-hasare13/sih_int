@@ -11,11 +11,19 @@ const Navbar = () => {
     };
 
     const handleLoginClick = () => {
-        navigate('/login');
+        // Scroll to the login section on the homepage
+        const loginSection = document.getElementById('login-portals-section');
+        if (loginSection) {
+            loginSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            // If on another page, navigate to the homepage first
+            navigate('/');
+            // The scroll will be triggered by HomePage's useEffect after navigation
+        }
     };
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 py-4 px-6 bg-white/80 backdrop-blur-md shadow-lg transition-all duration-300">
+        <nav className="fixed top-0 left-0 w-full z-50 p-6 bg-white/80 backdrop-blur-md shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center space-x-3">
                     <img src="/logoeklavyafinal.png" alt="Logo" className="h-10 w-10 transition-transform duration-300 hover:rotate-6" />
