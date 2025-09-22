@@ -7,9 +7,9 @@ import StudentLoginPage from "./StudentLoginPage";
 import { AuthContext, AuthProvider } from './AuthContext';
 import RiskPieChart from "./RiskPieChart";
 import SubjectScoresChart from "./SubjectScoresChart";
-import RiskTrendChart from "./RiskTrendChart";
 import UserManagement from "./UserManagement";
-import AboutUs from "./AboutUs"; // New: Import the AboutUs component
+import AboutUs from "./AboutUs";
+import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, Filler
 } from "chart.js";
@@ -27,7 +27,6 @@ const UserMgmtIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-
 const UploadIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>;
 const SearchIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>;
 const CloseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
-
 
 // --- Main Mentor/Admin Dashboard Page ---
 function handleSchedule() {
@@ -68,108 +67,163 @@ function DashboardPage() {
     };
 
     const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditableStudent(prev => ({ ...prev, [name]: value }));
-};
+        const { name, value } = e.target;
+        setEditableStudent(prev => ({ ...prev, [name]: value }));
+    };
 
-const handleUpdate = async () => {
-    try {
-        const response = await fetch("http://127.0.0.1:5000/api/student/update", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ student_id: editableStudent.student_id, updates: {
-                attendance_percentage: editableStudent.attendance_percentage,
-                fee_status: editableStudent.fee_status
-            }})
-        });
-        const data = await response.json();
-        alert(data.message);
-        if (response.ok) {
-            setRefresh(prev => !prev);
-            setEditMode(false);
-            setSelected(null);
-        }
-    } catch (error) {
-        alert("An error occurred while updating.");
-    }
-};
-
-const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this student?")) {
+    const handleUpdate = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/student/delete/${selected.info.student_id}`, {
-                method: 'DELETE',
+            const response = await fetch("http://127.0.0.1:5000/api/student/update", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ student_id: editableStudent.student_id, updates: {
+                    attendance_percentage: editableStudent.attendance_percentage,
+                    fee_status: editableStudent.fee_status
+                }})
             });
             const data = await response.json();
             alert(data.message);
             if (response.ok) {
                 setRefresh(prev => !prev);
+                setEditMode(false);
                 setSelected(null);
             }
         } catch (error) {
-            alert("An error occurred while deleting.");
+            alert("An error occurred while updating.");
         }
-    }
-};
+    };
 
-const handleExport = () => {
-    const data = selected.info;
-    const csvContent = 
-        "Key,Value\n" +
-        `Student ID,${data.student_id}\n` +
-        `Attendance,${data.attendance_percentage}\n` +
-        `Avg Score,${data.avg_test_score}\n` +
-        `Fee Status,${data.fee_status}\n` +
-        `Risk Level,${data.risk_level}\n` +
-        `\nReasons for Risk\n` +
-        data.reasons.map(r => `,"${r}"`).join("\n");
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    if (link.download !== undefined) { 
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", `student_${data.student_id}_report.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-};
-
-const handleFileUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.getElementById("file-upload");
-    if (!fileInput.files.length) {
-        alert("Please select a file first!");
-        return;
-    }
-    const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
-
-    try {
-        const res = await fetch("http://127.0.0.1:5000/api/upload", {
-            method: "POST",
-            body: formData,
-        });
-        const data = await res.json();
-        if (res.ok) {
-            alert("✅ File uploaded and processed successfully!");
-            setRefresh(prev => !prev);
-        } else {
-            alert("❌ " + data.message);
+    const handleDelete = async () => {
+        if (window.confirm("Are you sure you want to delete this student?")) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/student/delete/${selected.info.student_id}`, {
+                    method: 'DELETE',
+                });
+                const data = await response.json();
+                alert(data.message);
+                if (response.ok) {
+                    setRefresh(prev => !prev);
+                    setSelected(null);
+                }
+            } catch (error) {
+                alert("An error occurred while deleting.");
+            }
         }
-    } catch (error) {
-        console.error(error);
-        alert("❌ Error uploading file.");
-    }
-};
+    };
+
+    const handleExport = () => {
+        const data = selected.info;
+        const csvContent = 
+            "Key,Value\n" +
+            `Student ID,${data.student_id}\n` +
+            `Attendance,${data.attendance_percentage}\n` +
+            `Avg Score,${data.avg_test_score}\n` +
+            `Fee Status,${data.fee_status}\n` +
+            `Risk Level,${data.risk_level}\n` +
+            `\nReasons for Risk\n` +
+            data.reasons.map(r => `,"${r}"`).join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        if (link.download !== undefined) { 
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `student_${data.student_id}_report.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
+
+    const handleFileUpload = async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById("file-upload");
+        if (!fileInput.files.length) {
+            alert("Please select a file first!");
+            return;
+        }
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await res.json();
+            if (res.ok) {
+                alert("✅ File uploaded and processed successfully!");
+                setRefresh(prev => !prev);
+            } else {
+                alert("❌ " + data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("❌ Error uploading file.");
+        }
+    };
 
     // Data processing for summary counts
     const highRiskCount = students.filter((s) => s.risk_level === "High").length;
     const mediumRiskCount = students.filter((s) => s.risk_level === "Medium").length;
     const lowRiskCount = students.filter((s) => s.risk_level === "Low").length;
     const totalStudents = students.length;
+
+    // Academic Performance Chart Data (from StudentDashboard.jsx)
+    const cgpa = selected?.info
+        ? [
+              Number(selected.info.sem1_cgpa) || 0,
+              Number(selected.info.sem2_cgpa) || 0,
+              Number(selected.info.sem3_cgpa) || 0,
+              Number(selected.info.sem4_cgpa) || 0,
+              Number(selected.info.sem5_cgpa) || 0,
+              Number(selected.info.sem6_cgpa) || 0,
+          ]
+        : [];
+
+    const chartLabels = ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5", "Sem 6"];
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: {
+                grid: { color: "rgba(0, 0, 0, 0.05)" },
+                ticks: { color: "#374151" },
+                max: 10,
+            },
+            x: { grid: { display: false }, ticks: { color: "#374151" } },
+        },
+    };
+
+    const performanceData = {
+        labels: chartLabels,
+        datasets: [
+            {
+                label: "CGPA",
+                data: cgpa,
+                fill: true,
+                borderColor: "rgba(16, 185, 129, 1)",
+                backgroundColor: (context) => {
+                    const { ctx, chartArea } = context.chart;
+                    if (!chartArea) return null;
+                    const gradient = ctx.createLinearGradient(
+                        0,
+                        chartArea.bottom,
+                        0,
+                        chartArea.top
+                    );
+                    gradient.addColorStop(0, "rgba(16, 185, 129, 0)");
+                    gradient.addColorStop(1, "rgba(16, 185, 129, 0.4)");
+                    return gradient;
+                },
+                pointBackgroundColor: "rgba(16, 185, 129, 1)",
+                pointBorderColor: "#fff",
+                tension: 0.4,
+            },
+        ],
+    };
 
     const renderMainContent = () => {
         if (view === 'userManagement' && userRole === 'admin') {
@@ -330,10 +384,11 @@ const handleFileUpload = async (e) => {
                                         <p className="mt-4 p-4 bg-emerald-50 text-emerald-700 font-medium rounded-lg">No major issues detected.</p>
                                     )}
                                 </div>
-                                
                                 <div>
-                                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Test Scores Over Time</h3>
-                                    <RiskTrendChart studentId={selected.info.student_id} />
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-700">Academic Performance</h3>
+                                    <div style={{ height: "300px" }}>
+                                        <Line data={performanceData} options={commonOptions} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -398,7 +453,7 @@ function AppRoutes() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/about" element={<AboutUs />} /> {/* New: Route for About Us */}
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/student-login" element={<StudentLoginPage />} />
             <Route path="/dashboard" element={
                 isLoggedIn && (userRole === 'mentor' || userRole === 'admin') 
