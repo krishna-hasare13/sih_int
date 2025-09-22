@@ -29,6 +29,9 @@ const CloseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w
 
 
 // --- Main Mentor/Admin Dashboard Page ---
+function handleSchedule() {
+    console.log("Appointment Scheduled");
+}
 function DashboardPage() {
     // --- All states and logic functions are preserved ---
     const [students, setStudents] = useState([]);
@@ -215,6 +218,14 @@ function DashboardPage() {
                                                     <button onClick={() => setEditMode(true)} className="px-4 py-2 bg-sky-600 text-white rounded-lg shadow-md hover:bg-sky-700 transition">Edit</button>
                                                     <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition">Delete</button>
                                                     <button onClick={handleExport} className="px-4 py-2 bg-violet-600 text-white rounded-lg shadow-md hover:bg-violet-700 transition">Export CSV</button>
+                                                    {(selected.info.risk_level === "Medium" || selected.info.risk_level === "High") && (
+                                                      <button
+                                                        onClick={handleSchedule}
+                                                        className="px-5 py-2 bg-gradient-to-r from-violet-500 to-sky-500 text-white rounded-xl shadow-lg hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-violet-400 transition-all duration-200 font-semibold"
+                                                      >
+                                                        Schedule Appointment
+                                                      </button>
+                                                    )}
                                                 </>
                                             )}
                                         </div>

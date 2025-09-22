@@ -358,7 +358,7 @@ def delete_student(student_id):
         return jsonify({'message': f'Student {student_id} and their records deleted successfully.'}), 200
         
     except Exception as e:
-        conn.execute("ROLLBACK")
+        conn.execute("ROLLBACK") # Rollback on error
         return jsonify({'message': f'Error deleting student: {e}'}), 500
     finally:
         if conn:
