@@ -52,7 +52,7 @@ function StudentDashboard() {
             try {
                 const data = {
                     info: {
-                        name: "Aisha Sharma",
+                        name: "Ananya Sharma",
                         sem1_att: 85,
                         sem2_att: 91,
                         sem3_att: 88,
@@ -195,7 +195,7 @@ function StudentDashboard() {
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-sky-400 drop-shadow-sm">
-                        Welcome, {studentData?.name || "Student"}! 🎓
+                        Welcome, {studentData?.name || "Student"}! 🎓 
                     </h1>
                     <p className="text-xl text-gray-600 mt-2">
                         Here’s your academic progress overview.
@@ -334,7 +334,7 @@ function StudentDashboard() {
                             className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl"
                         >
                             ✕
-                        </button>
+                        </button> 
 
                         {/* Blur Overlay when Scheduled */}
                         {isScheduled && (
