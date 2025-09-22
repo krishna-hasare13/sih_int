@@ -149,3 +149,18 @@ S530,84,Overdue,OS,95,1
 S530,84,Overdue,DBMS,92,1
 S530,84,Overdue,ComputerNetwork,93,1
 S530,84,Overdue,ObjectOrientedProgramming,90,1
+<div className="p-6 bg-white rounded-2xl shadow-lg">
+    <p className="text-xl font-bold text-gray-900 mb-4">Subject Scores</p>
+    {studentData.subjects && studentData.subjects.length > 0 ? (
+        <ul className="space-y-2">
+            {studentData.subjects.map((subj, idx) => (
+                <li key={idx} className="flex justify-between border-b pb-2">
+                    <span className="font-semibold text-gray-700">{subj.subject}</span>
+                    <span className="font-bold text-sky-600">{subj.score}</span>
+                </li>
+            ))}
+        </ul>
+    ) : (
+        <p className="text-gray-500">No subject scores available.</p>
+    )}
+</div>

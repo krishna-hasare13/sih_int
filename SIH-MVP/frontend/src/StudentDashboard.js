@@ -17,6 +17,7 @@ const LogoutIcon = () => (
 );
 
 function StudentDashboard() {
+    const { isLoggedIn, username, logout } = useContext(AuthContext);
     const [studentData, setStudentData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -31,7 +32,6 @@ function StudentDashboard() {
         { id: 3, title: "Workshop on Advanced Algorithms", date: "15 Oct 2025" },
     ]);
 
-    const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -41,8 +41,8 @@ function StudentDashboard() {
     };
 
     useEffect(() => {
-        const username = localStorage.getItem("studentUsername");
-        if (!username) {
+        const storedUsername = localStorage.getItem("studentUsername");
+        if (!storedUsername) {
             navigate("/student-login");
             return;
         }
@@ -50,27 +50,28 @@ function StudentDashboard() {
         const fetchStudentData = async () => {
             setIsLoading(true);
             try {
-                const data = {
-                    info: {
-                        name: "Ananya Sharma",
-                        sem1_att: 85,
-                        sem2_att: 91,
-                        sem3_att: 88,
-                        sem4_att: 92,
-                        sem5_att: 86,
-                        sem6_att: 72,
-                        sem1_cgpa: 8.2,
-                        sem2_cgpa: 8.5,
-                        sem3_cgpa: 8.4,
-                        sem4_cgpa: 8.8,
-                        sem5_cgpa: 8.7,
-                        sem6_cgpa: 7.2,
-                        avgMarks: 68,
-                        credits: 142,
-                        wellbeing: 75,
-                    },
-                };
-                setStudentData(data.info);
+                // Fetch all students from backend API
+                const response = await fetch("http://127.0.0.1:5000/api/students");
+                const students = await response.json();
+
+                // Find student by username (assuming student_id === username)
+                const student = students.find(
+                    (s) => s.student_id === storedUsername
+                );
+
+                if (student) {
+                    // Aggregate semester data if needed, here just showing available fields
+                    setStudentData({
+                        name: storedUsername,
+                        sem6_att: student.attendance_percentage,
+                        avgMarks: student.test_score,
+                        credits: 0, // Set actual value if available in CSV
+                        sem6_cgpa: 0, // Set actual value if available in CSV
+                        wellbeing: 75, // Placeholder, set actual value if available
+                    });
+                } else {
+                    setStudentData(null);
+                }
             } catch (err) {
                 console.error(err);
                 setStudentData(null);
@@ -189,13 +190,21 @@ function StudentDashboard() {
         );
     }
 
+    if (!studentData) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center text-2xl font-bold text-red-600">
+                Data not available for this student.
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-gray-900 p-8 animate-fadein">
             {/* --- Header --- */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 via-emerald-600 to-sky-400 drop-shadow-sm">
-                        Welcome, {studentData?.name || "Student"}! 🎓 
+                        Welcome, {username || "Student"}! 🎓
                     </h1>
                     <p className="text-xl text-gray-600 mt-2">
                         Here’s your academic progress overview.
@@ -226,8 +235,8 @@ function StudentDashboard() {
                             <p className="text-gray-600 text-sm">Attendance</p>
                         </div>
                         <div>
-                            <p className="text-gray-900 font-bold">{studentData.avgMarks}</p>
-                            <p className="text-gray-600 text-sm">Avg Marks</p>
+                            <p className="text-gray-900 font-bold">{studentData.test_score}</p>
+                            <p className="text-gray-600 text-sm">Test Score</p>
                         </div>
                         <div>
                             <p className="text-gray-900 font-bold">{studentData.credits}</p>
