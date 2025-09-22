@@ -14,10 +14,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        window.location.href = '/homepage'; // Redirect to homepage
         setIsLoggedIn(false);
         setUserRole(null);
-        setUsername(null); // <-- Clear the username on logout
-        window.location.reload(); 
+        setUsername(null);
     };
 
     return (
