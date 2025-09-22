@@ -6,10 +6,10 @@ import StudentDashboard from "./StudentDashboard";
 import StudentLoginPage from "./StudentLoginPage";
 import { AuthContext, AuthProvider } from './AuthContext';
 import RiskPieChart from "./RiskPieChart";
-import AboutUs from './AboutUs';
 import SubjectScoresChart from "./SubjectScoresChart";
 import RiskTrendChart from "./RiskTrendChart";
 import UserManagement from "./UserManagement";
+import AboutUs from "./AboutUs"; // New: Import the AboutUs component
 import {
     Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, Filler
 } from "chart.js";
@@ -398,8 +398,8 @@ function AppRoutes() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/about" element={<AboutUs />} /> {/* New: Route for About Us */}
             <Route path="/student-login" element={<StudentLoginPage />} />
-            <Route path="/about" element={<AboutUs />} />
             <Route path="/dashboard" element={
                 isLoggedIn && (userRole === 'mentor' || userRole === 'admin') 
                 ? <DashboardPage /> 
